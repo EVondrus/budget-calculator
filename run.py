@@ -1,5 +1,8 @@
+import os
 import gspread
 from google.oauth2.service_account import Credentials
+
+from datetime import datetime
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -18,10 +21,61 @@ expenses = SHEET.worksheet('expenses')
 income_data = income.get_all_values()
 expenses_data = expenses.get_all_values()
 
+class IncomeEntry:
+    def __init__(self, date, description, amount):
+        self.date = date
+        self.description = description
+        self.amount = amount
+
+    def add_income_to_sheet(self, worksheet):
+        """
+        Adds a new row to the worksheet with income details.
+        """
+        next_row = len(worksheet.col_values(1)) + 1
+        income_data = [self.date, self.description, self.amount]
+        worksheet.insert_row(income_data, index=next_row)
+        print("Income added successfully!")
+        print(f"You added {self.amount:.2f} to your Incomes")
+        os.system('cls') 
+        menu()
+
+def add_monthly_income():
+    """
+    Collects user input for monthly income and adds it to the Google Sheet "income".
+    """
+    # USER WANT TO INPUT THEIR OWN DATE MAYBE??
+    date = datetime.now().strftime('%Y-%m-%d') 
+    # Collect and validate description
+    while True:
+        description = input("Enter Income description (max 15 characters): \n")
+        if len(description) > 15:
+            print("The description must be 15 characters or less. Please try again.")
+        else:
+            break
+
+    # Collect and validate amount
+    while True:
+        try:
+            amount = float(input("Enter your Monthly Income (Post-Tax):\n"))
+            if amount < 0:
+                print("Amount must be a positive number. Please try again.")
+            else:
+                break # Exit the loop if the input is valid
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+    
+    new_income = IncomeEntry(date, description, amount)
+    new_income.add_income_to_sheet(income)
+    
+
 def menu():
+    """
+    Display the menu and options to the user
+    """
+    os.system('cls')  # Clear the terminal
     print("Welcome to the Budget Calculator!\n")
     print("Please choose what you wish to do:\n")
-    print("1. Add Income\n")
+    print("1. Add an Income\n")
     print("2. Add an Expense\n")
     print("3. View Summary\n")
 
@@ -35,13 +89,13 @@ def menu():
         income_choice = int(input('Select your choice.\n'))
 
         if income_choice == 1:
-            # add_monthly_income()
-            pass
+            add_monthly_income()
+            
         elif income_choice == 2:
-            # add_additional_income()
+            # additional_income()
             pass
-        else: income_choice == 3
-            # menu()
+        elif income_choice == 3:
+            menu()
     
     elif choice == 2:
         # add_expenses()
@@ -79,6 +133,11 @@ def menu():
     else:
         print("Invalid choice, Please select: 1, 2 or 3.")
 
+    
 menu()
+
+
+
+
 
             
