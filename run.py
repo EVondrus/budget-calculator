@@ -49,10 +49,32 @@ class IncomeEntry:
 
 def add_monthly_income():
     """
-    Collects user input for monthly income and adds it to the Google Sheet "income".
+    Collects user input for monthly income, Date, Description, Amount and adds it to the Google Sheet "income".
     """
-    # USER WANT TO INPUT THEIR OWN DATE MAYBE??
-    date = datetime.now().strftime('%Y-%m-%d') 
+     # Display today's date as the default option
+    today = datetime.now().strftime('%Y-%m-%d')
+    print(f"Today's date is {today}.\nPress Enter to choose todays date or Enter a different date:\n")
+
+    # Initialize date with today's date as the default
+    date = today
+
+    while True:
+        # Prompt the user to enter a date, with the option to just press Enter for today's date
+        user_input = input("Date of income (YYYY-MM-DD):\n")
+
+        # If the user doesn't enter a date, use today's date
+        if not user_input:
+            print(f'Your income is automatically saved on todays date: {today}')
+            break # Exit the loop if the user presses Enter without typing a date
+
+        # Validate the date format if the user enters a date
+        try:
+            datetime.strptime(user_input, '%Y-%m-%d')
+            date = user_input # Update the date if the format is valid
+            break # Exit the loop if the date is valid
+        except ValueError:
+            print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
+
     # Collect and validate description
     while True:
         description = input("Enter Income description (max 15 characters): \n")
