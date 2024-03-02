@@ -46,77 +46,71 @@ class IncomeEntry:
         print("Income added successfully!")
         print(f"You added {self.amount:.2f} to your Income")
 
+    @classmethod  # decorator to define a method that operates on the class itself rather than on instances of the class
+    def add_monthly_income(cls, worksheet):
+        """
+        Collects user input for monthly income, Date, Description, Amount and adds it to the Google Sheet "income".
+        """
+        today = datetime.now().strftime("%Y-%m-%d")
+        print(
+            f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n"
+        )
+        date = today
 
-def add_monthly_income():
-    """
-    Collects user input for monthly income, Date, Description, Amount and adds it to the Google Sheet "income".
-    """
-    # Display today's date as the default option
-    today = datetime.now().strftime("%Y-%m-%d")
-    print(
-        f"Today's date is {today}.\nPress Enter to choose todays date or Enter a different date:\n"
-    )
+        while True:
+            user_input = input("Date of income (YYYY-MM-DD):\n")
+            if not user_input:
+                print(f"Your income is automatically saved on today's date: {today}")
+                break
+            try:
+                datetime.strptime(user_input, "%Y-%m-%d")
+                date = user_input
+                break
+            except ValueError:
+                print(
+                    "Invalid date format. Please enter the date in YYYY-MM-DD format."
+                )
 
-    # Initialize date with today's date as the default
-    date = today
-
-    while True:
-        # Prompt the user to enter a date, with the option to just press Enter for today's date
-        user_input = input("Date of income (YYYY-MM-DD):\n")
-
-        # If the user doesn't enter a date, use today's date
-        if not user_input:
-            print(f"Your income is automatically saved on todays date: {today}")
-            break  # Exit the loop if the user presses Enter without typing a date
-
-        # Validate the date format if the user enters a date
-        try:
-            datetime.strptime(user_input, "%Y-%m-%d")
-            date = user_input  # Update the date if the format is valid
-            break  # Exit the loop if the date is valid
-        except ValueError:
-            print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
-
-    # Collect and validate description
-    while True:
-        description = input("Enter Income description (max 15 characters): \n")
-        if len(description) > 15:
-            print("The description must be 15 characters or less. Please try again.")
-        else:
-            break
-
-    # Collect and validate amount
-    while True:
-        try:
-            amount = float(input("Enter your Monthly Income (Post-Tax):\n"))
-            if amount < 0:
-                print("Amount must be a positive number. Please try again.")
+        while True:
+            description = input("Enter Income description (max 15 characters): \n")
+            if len(description) > 15:
+                print(
+                    "The description must be 15 characters or less. Please try again."
+                )
             else:
-                break  # Exit the loop if the input is valid
-        except ValueError:
-            print("Invalid input. Please enter a number.")
+                break
 
-    new_income = IncomeEntry(date, description, amount)
-    new_income.add_income_to_sheet(income)
+        while True:
+            try:
+                amount = float(input("Enter your Monthly Income (Post-Tax):\n"))
+                if amount < 0:
+                    print("Amount must be a positive number. Please try again.")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Please enter a number.")
 
+        new_income = cls(date, description, amount)
+        new_income.add_income_to_sheet(worksheet)
 
-def get_number_choice(input_title, valid_choices):
-    """ 
-    Function to validate User number input
-    """
-    input_is_valid = False
-    while input_is_valid is False:
-        user_input = input(input_title)
-        try:
-            user_input = int(user_input)
-            if user_input in valid_choices:
-                input_is_valid = True
-            else:
-                print(f"Please enter one of this numbers: {valid_choices}")
-        except:
-            print("Only numbers allowed")
-    os.system("clear")
-    return user_input
+    @staticmethod  # Decorator that does not require access to the instance or the class itself.
+    def get_number_choice(input_title, valid_choices):
+        """
+        Function to validate User number input
+        """
+        input_is_valid = False
+        while not input_is_valid:
+            user_input = input(input_title)
+            try:
+                user_input = int(user_input)
+                if user_input in valid_choices:
+                    input_is_valid = True
+                else:
+                    print(f"Please enter one of these numbers: {valid_choices}")
+            except ValueError:
+                print("Only numbers allowed")
+        os.system("clear")
+        return user_input
 
 
 def menu():
@@ -131,15 +125,15 @@ def menu():
         print("3. View Summary\n")
         print("4. Exit\n")
 
-        choice = get_number_choice("Select your choice:\n", [1, 2, 3, 4])
+        choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3, 4])
         if choice == 1:
             print("1. Add Monthly Income\n")
             print("2. Add Additional Income\n")
             print("3. Back to Main Menu\n")
 
-            income_choice = get_number_choice("Select your choice:\n", [1, 2, 3])
+            income_choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3])
             if income_choice == 1:
-                add_monthly_income()
+                IncomeEntry.add_monthly_income(income)
             elif income_choice == 2:
                 # additional_income()
                 pass
@@ -158,7 +152,7 @@ def menu():
             print("5. Yearly Summary\n")
             print("6. Back to Main Menu\n")
 
-            view_choice = get_number_choice("Select your choice:\n", [1, 2, 3, 4, 5, 6])
+            view_choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3, 4, 5, 6])
             if view_choice == 1:
                 # view_all_expenses()
                 pass
