@@ -90,7 +90,7 @@ class IncomeEntry:
 
         self.date = date
         self.amount = amount
-        
+
 
     def add_monthly_income(self, worksheet):
         """
@@ -205,4 +205,8 @@ def menu():
             print("Invalid choice, Please select: 1, 2, 3 or 4.")
 
 
-menu()
+try:
+    menu()
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+    exit()
