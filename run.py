@@ -31,7 +31,7 @@ class IncomeEntry:
     Initialize a new IncomeEntry object with specified date, description, and amount.
     """
 
-    def __init__(self, date, description, amount):
+    def __init__(self, date=None, description=None, amount=None):
         self.date = date
         self.description = description
         self.amount = amount
@@ -46,15 +46,13 @@ class IncomeEntry:
         print("Income added successfully!")
         print(f"You added {self.amount:.2f} to your Income")
 
-    @classmethod  # decorator to define a method that operates on the class itself rather than on instances of the class
-    def add_monthly_income(cls, worksheet):
+
+    def collect_income_data(self, is_additional=False):
         """
-        Collects user input for monthly income, Date, Description, Amount and adds it to the Google Sheet "income".
+        Collects user input for date, description, and amount.
         """
         today = datetime.now().strftime("%Y-%m-%d")
-        print(
-            f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n"
-        )
+        print(f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n")
         date = today
 
         while True:
@@ -67,22 +65,22 @@ class IncomeEntry:
                 date = user_input
                 break
             except ValueError:
-                print(
-                    "Invalid date format. Please enter the date in YYYY-MM-DD format."
-                )
+                print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
-        while True:
-            description = input("Enter Income description (max 15 characters): \n")
-            if len(description) > 15:
-                print(
-                    "The description must be 15 characters or less. Please try again."
-                )
-            else:
-                break
+        if not is_additional:
+            self.description = "Monthly Income"
+            print(f"{self.description}") # Print the description for monthly income
+        else:
+            while True:
+                description = input("Enter Income description (max 15 characters): \n")
+                if len(description) > 15:
+                    print("The description must be 15 characters or less. Please try again.")
+                else:
+                    break
 
         while True:
             try:
-                amount = float(input("Enter your Monthly Income (Post-Tax):\n"))
+                amount = float(input("Enter your Income (Post-Tax):\n"))
                 if amount < 0:
                     print("Amount must be a positive number. Please try again.")
                 else:
@@ -90,10 +88,26 @@ class IncomeEntry:
             except ValueError:
                 print("Invalid input. Please enter a number.")
 
-        new_income = cls(date, description, amount)
-        new_income.add_income_to_sheet(worksheet)
+        self.date = date
+        self.amount = amount
+        
 
-    @staticmethod  # Decorator that does not require access to the instance or the class itself.
+    def add_monthly_income(self, worksheet):
+        """
+        Adds monthly income with a fixed description ("Monthly Income").
+        """
+        self.collect_income_data(is_additional=False)
+        self.add_income_to_sheet(worksheet)
+
+    def add_additional_income(self, worksheet):
+        """
+        Collects user input for additional income, including date, description, and amount,
+        and adds it to the Google Sheet "income".
+        """
+        self.collect_income_data(is_additional=True)
+        self.add_income_to_sheet(worksheet)
+
+    @staticmethod
     def get_number_choice(input_title, valid_choices):
         """
         Function to validate User number input
@@ -111,6 +125,7 @@ class IncomeEntry:
                 print("Only numbers allowed")
         os.system("clear")
         return user_input
+
 
 
 def menu():
@@ -133,10 +148,14 @@ def menu():
 
             income_choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3])
             if income_choice == 1:
-                IncomeEntry.add_monthly_income(income)
+                income_entry_instance = IncomeEntry()
+                income_entry_instance.add_monthly_income(income)
+
             elif income_choice == 2:
-                # additional_income()
-                pass
+                # Create an instance of IncomeEntry to call add_additional_income
+                income_entry_instance = IncomeEntry()
+                income_entry_instance.add_additional_income(income)
+
             elif income_choice == 3:
                 continue  # Go back to the main menu
 
