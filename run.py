@@ -42,9 +42,9 @@ class IncomeEntry:
         income_data = [self.date, self.description, self.amount]
         worksheet.insert_row(income_data, index=next_row)
         print("Income added successfully!")
-        print(f"You added {self.amount:.2f} to your Incomes")
-        os.system('cls') 
-        #menu()
+        print(f"You added {self.amount:.2f} to your Income")
+    
+        
         
 
 def add_monthly_income():
@@ -103,7 +103,6 @@ def menu():
     Display the menu and options to the user
     """
     while True: # Use a loop to keep the menu running
-        os.system('cls') # Clear the terminal
         print("Welcome to the Budget Calculator!\n")
         print("Please choose what you wish to do:\n")
         print("1. Add an Income\n")
@@ -161,10 +160,16 @@ def menu():
                 continue # Go back to the main menu
     
         elif choice == 4:
-            print("Exiting the Budget Calculator.")
-            break # Exit the loop and the program
+            while True:
+                confirm_exit = input("Are you sure you want to exit? (y / n):\n")
+                if confirm_exit.lower() == "y":
+                    print("Exiting the Budget Calculator.")
+                    exit() # Exit the loop and the program
+                elif confirm_exit.lower() == "n":
+                    break # Exit the loop and go back to the main menu
+                else:
+                    print("Invalid input. Please enter 'y' or 'n'.")
             
-        
         else:
             print("Invalid choice, Please select: 1, 2, 3 or 4.")
         
