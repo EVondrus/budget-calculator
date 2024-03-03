@@ -26,7 +26,27 @@ income_data = income.get_all_values()
 expenses_data = expenses.get_all_values()
 
 
-class IncomeEntry:
+@staticmethod
+def get_number_choice(input_title, valid_choices):
+    """
+    Function to validate User number input
+    """
+    input_is_valid = False
+    while not input_is_valid:
+        user_input = input(input_title)
+        try:
+            user_input = int(user_input)
+            if user_input in valid_choices:
+                input_is_valid = True
+            else:
+                print(f"Please enter one of these numbers: {valid_choices}")
+        except ValueError:
+            print("Only numbers allowed")
+    os.system("clear")
+    return user_input
+
+
+class Entry:
     """
     Initialize a new IncomeEntry object with specified date, description, and amount.
     """
@@ -41,7 +61,7 @@ class IncomeEntry:
         self.amount = amount
 
 
-    def add_income_to_sheet(self, worksheet):
+    def add_to_sheet(self, worksheet):
         """
         Adds a new row to the worksheet with income details.
         """
@@ -51,19 +71,18 @@ class IncomeEntry:
         print("Income added successfully!")
         print(f"You added {self.amount:.2f} to your Income")
 
-
-    def collect_income_data(self, is_additional=False):
+    def collect_data(self, is_additional=False):
         """
         Collects user input for date, description, and amount.
         """
         today = datetime.now().strftime("%Y-%m-%d")
         print(f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n")
         date = today
-
+        # Input for Date
         while True:
-            user_input = input("Date of income (YYYY-MM-DD):\n")
+            user_input = input("Date of entry (YYYY-MM-DD):\n")
             if not user_input:
-                print(f"Your income is automatically saved on today's date: {today}")
+                print(f"The new entry is automatically saved on today's date: {today}")
                 break
             try:
                 datetime.strptime(user_input, "%Y-%m-%d")
@@ -71,7 +90,7 @@ class IncomeEntry:
                 break
             except ValueError:
                 print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
-
+        # Set Defaults for Description and Category
         if not is_additional:
             self.description = "Monthly Income"
             self.category = "Monthly Income"
@@ -83,12 +102,13 @@ class IncomeEntry:
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 15:
                     self.description = description
-                    self.category = "Additional Income"
+                    self.category = "Extra Income"
                     break
                 else:
                     print("The description must be between 1 and 15 characters. Please try again.")
-
+                
         while True:
+            # Input for Income
             try:
                 amount = float(input("Enter your Income (Post-Tax):\n"))
                 if amount < 0:
@@ -101,14 +121,13 @@ class IncomeEntry:
         self.date = date
         self.amount = amount
 
-
+class IncomeEntry(Entry):
     def add_monthly_income(self, worksheet):
         """
         Adds monthly income with a fixed description ("Monthly Income").
         """
         self.collect_income_data(is_additional=False)
         self.add_income_to_sheet(worksheet)
-        
 
     def add_additional_income(self, worksheet):
         """
@@ -118,25 +137,10 @@ class IncomeEntry:
         self.collect_income_data(is_additional=True)
         self.add_income_to_sheet(worksheet)
 
-    @staticmethod
-    def get_number_choice(input_title, valid_choices):
-        """
-        Function to validate User number input
-        """
-        input_is_valid = False
-        while not input_is_valid:
-            user_input = input(input_title)
-            try:
-                user_input = int(user_input)
-                if user_input in valid_choices:
-                    input_is_valid = True
-                else:
-                    print(f"Please enter one of these numbers: {valid_choices}")
-            except ValueError:
-                print("Only numbers allowed")
-        os.system("clear")
-        return user_input
-
+class ExpenseEntry(Entry):
+    def add_expense(self, worksheet):
+        self.collect_data(is_additional=True)
+        self.add_to_sheet(worksheet)
 
 
 def menu():
@@ -151,13 +155,13 @@ def menu():
         print("3. View Summary\n")
         print("4. Exit\n")
 
-        choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3, 4])
+        choice = get_number_choice("Select your choice:\n", [1, 2, 3, 4])
         if choice == 1:
             print("1. Add Monthly Income\n")
             print("2. Add Additional Income\n")
             print("3. Back to Main Menu\n")
 
-            income_choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3])
+            income_choice = get_number_choice("Select your choice:\n", [1, 2, 3])
             if income_choice == 1:
                 income_entry_instance = IncomeEntry()
                 income_entry_instance.add_monthly_income(income)
@@ -171,9 +175,18 @@ def menu():
                 continue  # Go back to the main menu
 
         elif choice == 2:
-            # add_expenses()
-            pass
-        
+            print("1. Add Expense\n")
+            print("2. Back to Main Menu\n")
+
+            expense_choice = get_number_choice("Select your choice:\n", [1, 2])
+
+            if expense_choice == 1:
+                expense_entry_instance = ExpenseEntry()
+                expense_entry_instance.add_expense(expenses)
+                
+            elif expense_choice == 2:
+                continue
+
         elif choice == 3:
             print("1. View all Expenses by Month\n")
             print("2. View Monthly Expenses by Category\n")
@@ -182,7 +195,7 @@ def menu():
             print("5. Yearly Summary\n")
             print("6. Back to Main Menu\n")
 
-            view_choice = IncomeEntry.get_number_choice("Select your choice:\n", [1, 2, 3, 4, 5, 6])
+            view_choice = get_number_choice("Select your choice:\n", [1, 2, 3, 4, 5, 6])
             if view_choice == 1:
                 # view_all_expenses()
                 pass
