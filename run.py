@@ -73,10 +73,12 @@ class IncomeEntry:
         else:
             while True:
                 description = input("Enter Income description (max 15 characters): \n")
-                if len(description) > 15:
-                    print("The description must be 15 characters or less. Please try again.")
-                else:
+                if description.strip() == "":
+                    print("Description cannot be empty. Please enter a description.")
+                elif 1 <= len(description) <= 15:
                     break
+                else:
+                    print("The description must be between 1 and 15 characters. Please try again.")
 
         while True:
             try:
