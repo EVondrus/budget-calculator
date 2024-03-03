@@ -53,7 +53,7 @@ class Entry:
 
     def __init__(self, date=None, description=None, category=None, amount=None):
         """
-        Initialize a new IncomeEntry object with specified date, description, category, and amount.
+        Initialize a new Entry object with specified date, description, category, and amount.
         """
         self.date = date
         self.description = description
@@ -61,15 +61,19 @@ class Entry:
         self.amount = amount
 
 
-    def add_to_sheet(self, worksheet):
+    def add_to_sheet(self, worksheet, entry_type):
         """
-        Adds a new row to the worksheet with income details.
+        Adds a new row to the worksheet with details.
         """
         next_row = len(worksheet.col_values(1)) + 1
         income_data = [self.date, self.description, self.category, self.amount]
         worksheet.insert_row(income_data, index=next_row)
-        print("Income added successfully!")
-        print(f"You added {self.amount:.2f} to your Income")
+        if entry_type == "income":
+            print("Income added successfully!")
+            print(f"You added {self.amount:.2f} to your Incomes")
+        elif entry_type == "expense":
+            print("Expense added successfully!")
+            print(f"You spent {self.amount:.2f} on {self.description}")
 
     def collect_data(self, is_additional=False):
         """
@@ -97,7 +101,7 @@ class Entry:
             print(f"{self.description}") # Print the description for monthly income
         else:
             while True:
-                description = input("Enter Income description (max 15 characters): \n")
+                description = input("Enter description (max 15 characters): \n")
                 if description.strip() == "":
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 15:
@@ -110,7 +114,7 @@ class Entry:
         while True:
             # Input for Income
             try:
-                amount = float(input("Enter your Income (Post-Tax):\n"))
+                amount = float(input("Enter the amount (Post-Tax):\n"))
                 if amount < 0:
                     print("Amount must be a positive number. Please try again.")
                 else:
@@ -126,21 +130,21 @@ class IncomeEntry(Entry):
         """
         Adds monthly income with a fixed description ("Monthly Income").
         """
-        self.collect_income_data(is_additional=False)
-        self.add_income_to_sheet(worksheet)
+        self.collect_data(is_additional=True)
+        self.add_to_sheet(worksheet, "income")
 
     def add_additional_income(self, worksheet):
         """
         Collects user input for additional income, including date, description, and amount,
         and adds it to the Google Sheet "income".
         """
-        self.collect_income_data(is_additional=True)
-        self.add_income_to_sheet(worksheet)
+        self.collect_data(is_additional=True)
+        self.add_to_sheet(worksheet, "income")
 
 class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
         self.collect_data(is_additional=True)
-        self.add_to_sheet(worksheet)
+        self.add_to_sheet(worksheet, "expense")
 
 
 def menu():
@@ -183,7 +187,7 @@ def menu():
             if expense_choice == 1:
                 expense_entry_instance = ExpenseEntry()
                 expense_entry_instance.add_expense(expenses)
-                
+
             elif expense_choice == 2:
                 continue
 
