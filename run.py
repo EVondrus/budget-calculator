@@ -1,6 +1,7 @@
 # Imports
 import os
 import gspread
+import time
 
 from google.oauth2.service_account import Credentials
 from datetime import datetime
@@ -45,6 +46,15 @@ def get_number_choice(input_title, valid_choices):
     return user_input
 
 
+def print_slow(text):
+    """
+    Print each character of the text with a delay.
+    """
+    for char in text:
+        print(char, end="", flush=True)
+        time.sleep(0.1)  # Adjust this delay as needed
+
+
 class Entry:
     """
     Initialize a new IncomeEntry object with specified date, description, and amount.
@@ -68,11 +78,13 @@ class Entry:
         income_data = [self.date, self.description, self.category, self.amount]
         worksheet.insert_row(income_data, index=next_row)
         if entry_type == "income":
-            print("Income added successfully!")
+            print_slow("Income added successfully!\n")
             print(f"You added {self.amount:.2f} to your Incomes")
         elif entry_type == "expense":
-            print("Expense added successfully!")
+            print_slow("Expense added successfully!\n")
             print(f"You spent {self.amount:.2f} on {self.description}")
+        time.sleep(3)
+        os.system("clear")
 
     def collect_data(self, is_additional=False):
         """
@@ -85,7 +97,7 @@ class Entry:
         while True:
             user_input = input("Date of entry (YYYY-MM-DD):\n")
             if not user_input:
-                print(f"The new entry is automatically saved on today's date: {today}")
+                print(f"The new entry is automatically saved on today's date: {today}\n")
                 break
             try:
                 datetime.strptime(user_input, "%Y-%m-%d")
@@ -97,10 +109,11 @@ class Entry:
         if not is_additional:
             self.description = "Monthly Income"
             self.category = "Monthly Income"
-            print(f"{self.description}") # Print the description for monthly income
+            print(f"{self.description}\n") # Print the description for monthly income
         else:
             while True:
                 description = input("Enter description (max 15 characters):\n")
+                print()
                 if description.strip() == "":
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 15:
@@ -114,6 +127,7 @@ class Entry:
             # Input for Income
             try:
                 amount = float(input("Enter the amount (Post-Tax):\n"))
+                print()
                 if amount < 0:
                     print("Amount must be a positive number. Please try again.")
                 else:
@@ -151,7 +165,7 @@ def menu():
     Display the menu and options to the user
     """
     while True:  # Use a loop to keep the menu running
-        print("Welcome to the Budget Calculator!\n")
+        print_slow("Welcome to the Budget Calculator!\n\n")
         print("Please choose what you wish to do:\n")
         print("1. Add an Income\n")
         print("2. Add an Expense\n")
