@@ -26,7 +26,6 @@ income_data = income.get_all_values()
 expenses_data = expenses.get_all_values()
 
 
-@staticmethod
 def get_number_choice(input_title, valid_choices):
     """
     Function to validate User number input
@@ -101,7 +100,7 @@ class Entry:
             print(f"{self.description}") # Print the description for monthly income
         else:
             while True:
-                description = input("Enter description (max 15 characters): \n")
+                description = input("Enter description (max 15 characters):\n")
                 if description.strip() == "":
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 15:
