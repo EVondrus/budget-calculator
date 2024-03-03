@@ -31,17 +31,22 @@ class IncomeEntry:
     Initialize a new IncomeEntry object with specified date, description, and amount.
     """
 
-    def __init__(self, date=None, description=None, amount=None):
+    def __init__(self, date=None, description=None, category=None, amount=None):
+        """
+        Initialize a new IncomeEntry object with specified date, description, category, and amount.
+        """
         self.date = date
         self.description = description
+        self.category = category
         self.amount = amount
+
 
     def add_income_to_sheet(self, worksheet):
         """
         Adds a new row to the worksheet with income details.
         """
         next_row = len(worksheet.col_values(1)) + 1
-        income_data = [self.date, self.description, self.amount]
+        income_data = [self.date, self.description, self.category, self.amount]
         worksheet.insert_row(income_data, index=next_row)
         print("Income added successfully!")
         print(f"You added {self.amount:.2f} to your Income")
@@ -69,6 +74,7 @@ class IncomeEntry:
 
         if not is_additional:
             self.description = "Monthly Income"
+            self.category = "Monthly Income"
             print(f"{self.description}") # Print the description for monthly income
         else:
             while True:
@@ -76,6 +82,8 @@ class IncomeEntry:
                 if description.strip() == "":
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 15:
+                    self.description = description
+                    self.category = "Additional Income"
                     break
                 else:
                     print("The description must be between 1 and 15 characters. Please try again.")
@@ -100,6 +108,7 @@ class IncomeEntry:
         """
         self.collect_income_data(is_additional=False)
         self.add_income_to_sheet(worksheet)
+        
 
     def add_additional_income(self, worksheet):
         """
