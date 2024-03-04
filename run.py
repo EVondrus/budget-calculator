@@ -52,7 +52,22 @@ def print_slow(text):
     """
     for char in text:
         print(char, end="", flush=True)
-        time.sleep(0.1)  # Adjust this delay as needed
+        time.sleep(0.1)  
+
+
+expense_categories = []
+
+def add_category(category):
+    """
+    Adds a category if it's not already in the  Category list.
+    Display validation message to the user.
+    """
+    global expense_categories  # Access the global variable
+    if category not in expense_categories:
+        expense_categories.append(category)
+        print(f"Category '{category}' added successfully.")
+    else:
+        print(f"Category: '{category}'")
 
 
 class Entry:
@@ -70,12 +85,12 @@ class Entry:
         self.amount = amount
 
 
-    def add_to_sheet(self, worksheet, entry_type):
+    def add_to_sheet(self, worksheet, entry_type, category):
         """
         Adds a new row to the worksheet with details.
         """
         next_row = len(worksheet.col_values(1)) + 1
-        income_data = [self.date, self.description, self.category, self.amount]
+        income_data = [self.date, self.description, category, self.amount]
         worksheet.insert_row(income_data, index=next_row)
         if entry_type == "income":
             print_slow("Income added successfully!\n")
@@ -86,9 +101,9 @@ class Entry:
         time.sleep(3)
         os.system("clear")
 
-    def collect_data(self, is_additional=False):
+    def collect_data(self, is_additional=False, is_expense=False):
         """
-        Collects user input for date, description, and amount.
+        Collects user input for date, category, description, and amount.
         """
         today = datetime.now().strftime("%Y-%m-%d")
         print(f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n")
@@ -105,13 +120,15 @@ class Entry:
                 break
             except ValueError:
                 print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
-        # Set Defaults for Description and Category
+
+         # Set Defaults for Description and Category for Income
         if not is_additional:
             self.description = "Monthly Income"
             self.category = "Monthly Income"
             print(f"{self.description}\n") # Print the description for monthly income
         else:
             while True:
+                # User set Description and default Category
                 description = input("Enter description (max 15 characters):\n")
                 print()
                 if description.strip() == "":
@@ -122,9 +139,9 @@ class Entry:
                     break
                 else:
                     print("The description must be between 1 and 15 characters. Please try again.")
-                
+
         while True:
-            # Input for Income
+            # Input Amount for Income and Expense
             try:
                 amount = float(input("Enter the amount (Post-Tax):\n"))
                 print()
@@ -143,7 +160,7 @@ class IncomeEntry(Entry):
         """
         Adds monthly income with a fixed description ("Monthly Income").
         """
-        self.collect_data(is_additional=True)
+        self.collect_data(is_additional=False, is_expense=False)
         self.add_to_sheet(worksheet, "income")
 
     def add_additional_income(self, worksheet):
@@ -151,13 +168,14 @@ class IncomeEntry(Entry):
         Collects user input for additional income, including date, description, and amount,
         and adds it to the Google Sheet "income".
         """
-        self.collect_data(is_additional=True)
+        self.collect_data(is_additional=True, is_expense=False)
         self.add_to_sheet(worksheet, "income")
 
 class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
-        self.collect_data(is_additional=True)
-        self.add_to_sheet(worksheet, "expense")
+        self.collect_data(is_additional=True, is_expense=True)
+        add_category(self.category)
+        self.add_to_sheet(worksheet, "expense", self.category)
 
 
 def menu():
