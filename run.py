@@ -26,7 +26,6 @@ expenses = SHEET.worksheet("expenses")
 income_data = income.get_all_values()
 expenses_data = expenses.get_all_values()
 
-
 def get_number_choice(input_title, valid_choices):
     """
     Function to validate User number input
@@ -45,7 +44,6 @@ def get_number_choice(input_title, valid_choices):
     os.system("clear")
     return user_input
 
-
 def print_slow(text):
     """
     Print each character of the text with a delay.
@@ -54,21 +52,47 @@ def print_slow(text):
         print(char, end="", flush=True)
         time.sleep(0.1)  
 
-
 expense_categories = []
 
 def add_category(category):
     """
-    Adds a category if it's not already in the  Category list.
-    Display validation message to the user.
+    Adds a category to the global list of expense categories if it doesn't already exist.
     """
-    global expense_categories  # Access the global variable
+    global expense_categories  # Acessing the global variable
     if category not in expense_categories:
         expense_categories.append(category)
         print(f"Category '{category}' added successfully.")
     else:
         print(f"Category: '{category}'")
 
+def choose_category():
+    """
+    Displays a list of expense categories with numbers for selection.
+    Allows the user to choose an existing category or create a new one.
+    """
+    global expense_categories 
+    # Print categories with numbers starting from 1
+    print("Select category by number:")
+    for i, category in enumerate(expense_categories, start=1):
+        print(f"{i}. {category}")
+    
+    # Add an option for the user to create a new category
+    print(f"{len(expense_categories) + 1}. Create a new category")
+    
+    # Generate a list of valid choices (category numbers) including the option for creating a new category
+    valid_choices = list(range(1, len(expense_categories) + 2))  # +2 to include the option for creating a new category
+    
+    # Use get_number_choice function to get the validated user's choice
+    category_choice = get_number_choice("Select your choice:\n", valid_choices)
+    
+    # If the user chose to create a new category
+    if category_choice == len(expense_categories) + 1:  # Check against the index of the new category option
+        category = input("Enter the name of the new category:\n")
+    else:
+        category = expense_categories[category_choice - 1]
+    
+    return category
+    
 
 class Entry:
     """
@@ -83,7 +107,6 @@ class Entry:
         self.description = description
         self.category = category
         self.amount = amount
-
 
     def add_to_sheet(self, worksheet, entry_type, category):
         """
@@ -121,7 +144,7 @@ class Entry:
             except ValueError:
                 print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
-         # Set Defaults for Description and Category for Income
+        # Set Defaults for Description and Category for Income
         if not is_additional:
             self.description = "Monthly Income"
             self.category = "Monthly Income"
@@ -174,9 +197,9 @@ class IncomeEntry(Entry):
 class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
         self.collect_data(is_additional=True, is_expense=True)
+        self.category = choose_category()
         add_category(self.category)
         self.add_to_sheet(worksheet, "expense", self.category)
-
 
 def menu():
     """
@@ -263,9 +286,10 @@ def menu():
         else:
             print("Invalid choice, Please select: 1, 2, 3 or 4.")
 
-
 try:
     menu()
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
     exit()
+
+
