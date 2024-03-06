@@ -126,3 +126,10 @@ The following input validation is carried out on the user input:
 - Budget Analysis: Integrate data visualization tools to generate charts and graphs, offering users a visual representation of their budget allocation and spending habits.
 - Goal Setting: Allow users to set financial goals such as saving for a vacation, buying a house, or paying off debt. The calculator can then track progress towards these goals and provide actionable insights to help achieve them.
 - Integration with Financial Institutions: Allow users to sync their bank accounts and credit cards with the budget calculator to automatically import transactions and update their budget in real-time.
+
+## Data Model
+Throughout this project, I implemented principles of Object-Oriented Programming. The Budget Calculator is structured around three classes:
+
+- Entry: This class represents a financial entry, which can be either an income or an expense. It includes methods for adding the entry to a Google Sheets worksheet, collecting data for the entry, and initializing entry attributes such as date, description, category, and amount.
+- IncomeEntry: This class inherits from the Entry class and represents an income entry specifically. It includes methods for adding monthly income (with a fixed description) and additional income (allowing for a custom description).
+- ExpenseEntry: This class also inherits from the Entry class and represents an expense entry. It includes a method for adding an expense, which collects user input for the date, description, amount, and category. Additionally, it incorporates a method to choose a category for the expense.
