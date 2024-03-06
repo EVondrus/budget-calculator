@@ -1,32 +1,29 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# The Budget Calculator
+The Budget Calculator provides a simple yet effective solution for managing personal finances. With its intuitive interface and seamless integration with Google Sheets, users can easily track their income and expenses, enabling better financial decision-making.
 
-Welcome,
+The live link can be found here - [Budget Calculator]()
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **March 14, 2023**
+![Flowchart]()
 
-## Reminders
+## Site Owner Goals
+- Provide users with a functional and user-friendly application for managing their finances efficiently.
+- Encourage users to return to the application regularly by offering valuable features and insights into their financial activities.
+- Foster trust and reliability by ensuring accurate data management and secure handling of sensitive financial information.
 
-- Your code must be placed in the `run.py` file
-- Your dependencies must be placed in the `requirements.txt` file
-- Do not edit any of the other files or your code may not deploy properly
+## User Stories
 
-## Creating the Heroku app
+- ### As a user I want to:
+ - Understand the main purpose of the budget calculator and how it can help manage my finances effectively.
+ - Be guided through the process of adding income and expenses, ensuring that the interface is intuitive and easy to navigate.
+ - Have access to a summary of my budgeting activities, including total income, total expenses, total expenses by category and remaining balance.
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
 
-1. `heroku/python`
-2. `heroku/nodejs`
+## Logic Flow
+To visualize the sequence of actions needed in the budget calculator, I utilized Lucid Chart to create a flowchart. This approach proved invaluable as it enabled me to conceptualize the project's structure, delineate necessary functions, and understand the interaction among various components.
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
 
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
 
-Connect your GitHub repository and deploy as normal.
+As the flow chart was created at the outset of the project, it does not fully reflect all elements of the game.
 
-## Constraints
+![Flow Chart]()
 
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
-
----
-
-Happy coding!
