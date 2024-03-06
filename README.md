@@ -120,3 +120,9 @@ The following input validation is carried out on the user input:
 
 ![]()
 
+### Future Features
+- Expense Tracking: Implement a feature to track recurring expenses automatically, providing insights into spending patterns over time.
+- Expense Analysis Tools: Develop tools for analyzing expenses to identify patterns, such as frequent spending categories or seasonal variations.
+- Budget Analysis: Integrate data visualization tools to generate charts and graphs, offering users a visual representation of their budget allocation and spending habits.
+- Goal Setting: Allow users to set financial goals such as saving for a vacation, buying a house, or paying off debt. The calculator can then track progress towards these goals and provide actionable insights to help achieve them.
+- Integration with Financial Institutions: Allow users to sync their bank accounts and credit cards with the budget calculator to automatically import transactions and update their budget in real-time.
