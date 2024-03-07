@@ -4,7 +4,7 @@ import gspread
 import time
 
 from google.oauth2.service_account import Credentials
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Define the scope required for accessing Google Sheets
 SCOPE = [
@@ -31,6 +31,7 @@ expenses_data = expenses.get_all_values()
 # Extract expense categories from the third column
 expense_categories = list(set([row[2] for row in expenses_data[1:]]))
 
+
 def get_number_choice(input_title, valid_choices):
     """
     Function to validate User number input
@@ -49,20 +50,21 @@ def get_number_choice(input_title, valid_choices):
     os.system("clear")
     return user_input
 
+
 def print_slow(text):
     """
     Print each character of the text with a delay.
     """
     for char in text:
         print(char, end="", flush=True)
-        #time.sleep(0.1)  
+        # time.sleep(0.1)
 
 
 def add_category(category):
     """
     Adds a category to the global list of expense categories.
     """
-    global expense_categories 
+    global expense_categories
     # Add the category to the expense_categories list
     if category not in expense_categories:
         expense_categories.append(category)
@@ -70,13 +72,14 @@ def add_category(category):
     else:
         print(f"Category: '{category}' already exists.")
 
+
 def choose_category():
     """
     Displays a list of expense categories with numbers for selection.
     Allows the user to choose an existing category or create a new one.
     """
-    global expense_categories 
-    while True: # Loop until a valid category is chosen
+    global expense_categories
+    while True:  # Loop until a valid category is chosen
         # Print categories with numbers starting from 1
         print("Select category by number:")
         for i, category in enumerate(expense_categories, start=1):
@@ -84,26 +87,31 @@ def choose_category():
         # Add an option for the user to create a new category
         print(f"{len(expense_categories) + 1}. Create a new category\n")
         # Generate a list of valid choices (category numbers) including the option for creating a new category
-        valid_choices = list(range(1, len(expense_categories) + 2)) # +2 to include the option for creating a new category
+        # +2 to include the option for creating a new category
+        valid_choices = list(range(1, len(expense_categories) + 2))
         # Use get_number_choice function to get the validated user's choice
-        category_choice = get_number_choice("Select your choice:\n", valid_choices)
+        category_choice = get_number_choice(
+            "Select your choice:\n", valid_choices)
         # If the user chose to create a new category
-        if category_choice == len(expense_categories) + 1: # Check against the index of the new category option
+        # Check against the index of the new category option
+        if category_choice == len(expense_categories) + 1:
             while True:
                 category = input("Enter the name of the new category:\n")
                 # Check if the category already exists in the list before adding it
                 if category not in expense_categories:
-                    add_category(category) # Call add_category function to handle adding the category
-                    break # Exit the loop after adding a new category
+                    # Call add_category function to handle adding the category
+                    add_category(category)
+                    break  # Exit the loop after adding a new category
                 else:
-                    print(f"Category: '{category}' already exists in the list.\nPlease enter a new Category name or choose from the list.")
-            break # Exit the loop after adding a new category
+                    print(f"Category: '{
+                          category}' already exists in the list.\nPlease enter a new Category name or choose from the list.")
+            break  # Exit the loop after adding a new category
         else:
             category = expense_categories[category_choice - 1]
-            break # Exit the loop if an existing category is selected
-    
+            break  # Exit the loop if an existing category is selected
+
     return category
-    
+
 
 class Entry:
     """
@@ -133,20 +141,22 @@ class Entry:
             print_slow("Expense added successfully!\n")
             print(f"You spent {self.amount:.2f} on {self.description}")
         time.sleep(5)
-        #os.system("clear")
+        # os.system("clear")
 
     def collect_data(self, is_additional=False, is_expense=False):
         """
         Collects user input for date, category, description, and amount.
         """
         today = datetime.now().strftime("%Y-%m-%d")
-        print(f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n")
+        print(f"Today's date is {
+              today}.\nPress Enter to choose today's date or Enter a different date:\n")
         date = today
         # Input for Date
         while True:
             user_input = input("Date of entry (YYYY-MM-DD):\n")
             if not user_input:
-                print(f"The new entry is automatically saved on today's date: {today}\n")
+                print(
+                    f"The new entry is automatically saved on today's date: {today}\n")
                 break
             try:
                 datetime.strptime(user_input, "%Y-%m-%d")
@@ -159,7 +169,8 @@ class Entry:
         if not is_additional:
             self.description = "Monthly Income"
             self.category = "Monthly Income"
-            print(f"{self.description}\n") # Print the description for monthly income
+            # Print the description for monthly income
+            print(f"{self.description}\n")
         else:
             while True:
                 # User set Description and default Category
@@ -172,7 +183,8 @@ class Entry:
                     self.category = "Extra Income"
                     break
                 else:
-                    print("The description must be between 1 and 15 characters. Please try again.")
+                    print(
+                        "The description must be between 1 and 15 characters. Please try again.")
 
         while True:
             # Input Amount for Income and Expense
@@ -188,6 +200,7 @@ class Entry:
 
         self.date = date
         self.amount = amount
+
 
 class IncomeEntry(Entry):
     def add_monthly_income(self, worksheet):
@@ -205,11 +218,69 @@ class IncomeEntry(Entry):
         self.collect_data(is_additional=True, is_expense=False)
         self.add_to_sheet(worksheet, "income")
 
+
 class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
         self.collect_data(is_additional=True, is_expense=True)
         self.category = choose_category()
         self.add_to_sheet(worksheet, "expense", self.category)
+
+
+class Summary:
+    def __init__(self, expenses_data, income_data):
+        self.expenses_data = expenses_data
+        self.income_data = income_data
+
+    def view_expenses_by_month(self):
+        """
+        Allows the user to view all expenses for a chosen month and displays the total.
+        """
+        while True:
+            # Prompt the user for the month and year
+            month = input("Enter the month (MM): \n")
+
+            if not (1 <= int(month) <= 12):
+                print("Invalid month. Please enter a month between 01 and 12.")
+                continue
+
+            year = input("Enter the year (YYYY): \n")
+            # Convert the month and year to a datetime object for comparison
+            try:
+                start_date = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
+                # Assuming 31 days in a month
+                end_date = start_date + timedelta(days=31)
+            except ValueError:
+                print("Invalid year. Please try again.")
+                continue  
+
+            # Filter expenses based on the chosen month and year
+            filtered_expenses = [row for row in self.expenses_data[1:]
+                                if start_date <= datetime.strptime(row[0], "%Y-%m-%d") < end_date]
+
+            # Calculate the total expenses for the month
+            total_expenses = sum(float(expense[3])
+                                for expense in filtered_expenses)
+
+            # Print the total expenses for the month
+            if filtered_expenses:
+                print(f"\nTotal expenses for {month}/{year}: {total_expenses:.2f}\n")
+                break  # Exit loop if expenses are found
+            else:
+                print(f"No expenses found for {month}/{year}.")
+                choice = input("Would you like to enter a new date? (y / n): \n")
+                if choice.lower() == "y":
+                    continue  # Prompt user again
+                elif choice.lower() == "n":
+                    print("Returning to the menu...")
+                    os.system("clear")
+                    menu()  # Exit function
+                else:
+                    print("Invalid choice. Please enter 'y' or 'n'.")
+                    continue  # Prompt user again
+
+# Create an instance of the Summary class with the loaded data
+summary = Summary(expenses_data, income_data)
+
 
 def menu():
     """
@@ -229,7 +300,8 @@ def menu():
             print("2. Add Additional Income\n")
             print("3. Back to Main Menu\n")
 
-            income_choice = get_number_choice("Select your choice:\n", [1, 2, 3])
+            income_choice = get_number_choice(
+                "Select your choice:\n", [1, 2, 3])
             if income_choice == 1:
                 income_entry_instance = IncomeEntry()
                 income_entry_instance.add_monthly_income(income)
@@ -263,9 +335,10 @@ def menu():
             print("5. Yearly Summary\n")
             print("6. Back to Main Menu\n")
 
-            view_choice = get_number_choice("Select your choice:\n", [1, 2, 3, 4, 5, 6])
+            view_choice = get_number_choice(
+                "Select your choice:\n", [1, 2, 3, 4, 5, 6])
             if view_choice == 1:
-                # view_all_expenses()
+                summary.view_expenses_by_month()
                 pass
             elif view_choice == 2:
                 # view_expenses_categories()
@@ -284,7 +357,8 @@ def menu():
 
         elif choice == 4:
             while True:
-                confirm_exit = input("Are you sure you want to exit? (y / n):\n")
+                confirm_exit = input(
+                    "Are you sure you want to exit? (y / n):\n")
                 if confirm_exit.lower() == "y":
                     print("Exiting the Budget Calculator.")
                     exit()  # Exit the loop and the program
@@ -296,10 +370,9 @@ def menu():
         else:
             print("Invalid choice, Please select: 1, 2, 3 or 4.")
 
+
 try:
     menu()
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
     exit()
-
-
