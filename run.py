@@ -19,12 +19,17 @@ SCOPE_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPE_CREDS)
 # Open the Google Sheets document named 'budget_calculator'
 SHEET = GSPREAD_CLIENT.open("budget_calculator")
+
 # Access the 'income' and 'expenses' worksheets within the Google Sheets document
 income = SHEET.worksheet("income")
 expenses = SHEET.worksheet("expenses")
+
 # Retrieve all existing data from the 'income' and 'expenses' worksheets
 income_data = income.get_all_values()
 expenses_data = expenses.get_all_values()
+
+# Extract expense categories from the third column
+expense_categories = list(set([row[2] for row in expenses_data[1:]]))
 
 def get_number_choice(input_title, valid_choices):
     """
@@ -50,20 +55,20 @@ def print_slow(text):
     """
     for char in text:
         print(char, end="", flush=True)
-        time.sleep(0.1)  
+        #time.sleep(0.1)  
 
-expense_categories = []
 
 def add_category(category):
     """
-    Adds a category to the global list of expense categories if it doesn't already exist.
+    Adds a category to the global list of expense categories.
     """
-    global expense_categories  # Acessing the global variable
+    global expense_categories 
+    # Add the category to the expense_categories list
     if category not in expense_categories:
         expense_categories.append(category)
         print(f"Category '{category}' added successfully.")
     else:
-        print(f"Category: '{category}'")
+        print(f"Category: '{category}' already exists.")
 
 def choose_category():
     """
@@ -71,25 +76,31 @@ def choose_category():
     Allows the user to choose an existing category or create a new one.
     """
     global expense_categories 
-    # Print categories with numbers starting from 1
-    print("Select category by number:")
-    for i, category in enumerate(expense_categories, start=1):
-        print(f"{i}. {category}")
-    
-    # Add an option for the user to create a new category
-    print(f"{len(expense_categories) + 1}. Create a new category")
-    
-    # Generate a list of valid choices (category numbers) including the option for creating a new category
-    valid_choices = list(range(1, len(expense_categories) + 2))  # +2 to include the option for creating a new category
-    
-    # Use get_number_choice function to get the validated user's choice
-    category_choice = get_number_choice("Select your choice:\n", valid_choices)
-    
-    # If the user chose to create a new category
-    if category_choice == len(expense_categories) + 1:  # Check against the index of the new category option
-        category = input("Enter the name of the new category:\n")
-    else:
-        category = expense_categories[category_choice - 1]
+    while True: # Loop until a valid category is chosen
+        # Print categories with numbers starting from 1
+        print("Select category by number:")
+        for i, category in enumerate(expense_categories, start=1):
+            print(f"{i}. {category}")
+        # Add an option for the user to create a new category
+        print(f"{len(expense_categories) + 1}. Create a new category\n")
+        # Generate a list of valid choices (category numbers) including the option for creating a new category
+        valid_choices = list(range(1, len(expense_categories) + 2)) # +2 to include the option for creating a new category
+        # Use get_number_choice function to get the validated user's choice
+        category_choice = get_number_choice("Select your choice:\n", valid_choices)
+        # If the user chose to create a new category
+        if category_choice == len(expense_categories) + 1: # Check against the index of the new category option
+            while True:
+                category = input("Enter the name of the new category:\n")
+                # Check if the category already exists in the list before adding it
+                if category not in expense_categories:
+                    add_category(category) # Call add_category function to handle adding the category
+                    break # Exit the loop after adding a new category
+                else:
+                    print(f"Category: '{category}' already exists in the list.\nPlease enter a new Category name or choose from the list.")
+            break # Exit the loop after adding a new category
+        else:
+            category = expense_categories[category_choice - 1]
+            break # Exit the loop if an existing category is selected
     
     return category
     
@@ -121,8 +132,8 @@ class Entry:
         elif entry_type == "expense":
             print_slow("Expense added successfully!\n")
             print(f"You spent {self.amount:.2f} on {self.description}")
-        time.sleep(3)
-        os.system("clear")
+        time.sleep(5)
+        #os.system("clear")
 
     def collect_data(self, is_additional=False, is_expense=False):
         """
@@ -198,7 +209,6 @@ class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
         self.collect_data(is_additional=True, is_expense=True)
         self.category = choose_category()
-        add_category(self.category)
         self.add_to_sheet(worksheet, "expense", self.category)
 
 def menu():
