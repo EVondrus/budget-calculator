@@ -103,8 +103,7 @@ def choose_category():
                     add_category(category)
                     break  # Exit the loop after adding a new category
                 else:
-                    print(f"Category: '{
-                          category}' already exists in the list.\nPlease enter a new Category name or choose from the list.")
+                    print(f"Category: '{category}' already exists in the list.\nPlease enter a new Category name or choose from the list.")
             break  # Exit the loop after adding a new category
         else:
             category = expense_categories[category_choice - 1]
