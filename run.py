@@ -147,15 +147,13 @@ class Entry:
         Collects user input for date, category, description, and amount.
         """
         today = datetime.now().strftime("%Y-%m-%d")
-        print(f"Today's date is {
-              today}.\nPress Enter to choose today's date or Enter a different date:\n")
+        print(f"Today's date is {today}.\nPress Enter to choose today's date or Enter a different date:\n")
         date = today
         # Input for Date
         while True:
             user_input = input("Date of entry (YYYY-MM-DD):\n")
             if not user_input:
-                print(
-                    f"The new entry is automatically saved on today's date: {today}\n")
+                print(f"The new entry is automatically saved on today's date: {today}\n")
                 break
             try:
                 datetime.strptime(user_input, "%Y-%m-%d")
@@ -173,17 +171,17 @@ class Entry:
         else:
             while True:
                 # User set Description and default Category
-                description = input("Enter description (max 15 characters):\n")
+                description = input("Enter description (max 12 characters):\n")
                 print()
                 if description.strip() == "":
                     print("Description cannot be empty. Please enter a description.")
-                elif 1 <= len(description) <= 15:
+                elif 1 <= len(description) <= 12:
                     self.description = description
                     self.category = "Extra Income"
                     break
                 else:
                     print(
-                        "The description must be between 1 and 15 characters. Please try again.")
+                        "The description must be between 1 and 12 characters. Please try again.")
 
         while True:
             # Input Amount for Income and Expense
