@@ -248,53 +248,56 @@ class Summary:
         self.expenses_data = expenses_data
         self.income_data = income_data
 
+    def get_date_input(self):
+        """
+        Prompts the user for a month and year, validates the input, and returns a tuple of (start_date, end_date).
+        """
+        while True:
+            # Prompt the user to input month
+            month = input("Enter the month (MM): \n")
+            if not (1 <= int(month) <= 12):
+                print("Invalid month. Please enter a month between 01 and 12.")
+                continue
+            # Prompt the user to input year
+            year = input("Enter the year (YYYY): \n")
+            try:
+                # Convert month and year to start_date
+                start_date = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
+                # Calculate end_date assuming 31 days in a month
+                end_date = start_date + timedelta(days=31)
+                # Return start_date and end_date as a tuple
+                return start_date, end_date
+            except ValueError:
+                print("Invalid year. Please try again.")
+                continue
+
+    def filter_expenses_by_date_range(self, start_date, end_date):
+        """
+        Filters expenses data based on a given date range.
+        """
+        # Iterate through each row in the expenses data and filter based on date range
+        return [row for row in self.expenses_data[1:]
+                if start_date <= datetime.strptime(row[0], "%Y-%m-%d") < end_date]
+                
     def view_expenses_by_month(self):
         """
         Allows the user to view all expenses for a chosen month and displays the total.
         """
-        while True:
-            # Prompt the user for the month and year
-            month = input("Enter the month (MM): \n")
-
-            if not (1 <= int(month) <= 12):
-                print("Invalid month. Please enter a month between 01 and 12.")
-                continue
-
-            year = input("Enter the year (YYYY): \n")
-            # Convert the month and year to a datetime object for comparison
-            try:
-                start_date = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
-                # Assuming 31 days in a month
-                end_date = start_date + timedelta(days=31)
-            except ValueError:
-                print("Invalid year. Please try again.")
-                continue  
-
-            # Filter expenses based on the chosen month and year
-            filtered_expenses = [row for row in self.expenses_data[1:]
-                                if start_date <= datetime.strptime(row[0], "%Y-%m-%d") < end_date]
-
-            # Calculate the total expenses for the month
-            total_expenses = sum(float(expense[3])
-                                for expense in filtered_expenses)
-
-            # Print the total expenses for the month
-            if filtered_expenses:
-                print(f"\nTotal expenses for {month}/{year}: {total_expenses:.2f}\n")
-                break  # Exit loop if expenses are found
-            else:
-                print(f"No expenses found for {month}/{year}.")
-                choice = input("Would you like to enter a new date? (y / n): \n")
-                if choice.lower() == "y":
-                    continue  # Prompt user again
-                elif choice.lower() == "n":
-                    print("Returning to the menu...")
-                    os.system("clear")
-                    menu()  # Exit function
-                else:
-                    print("Invalid choice. Please enter 'y' or 'n'.")
-                    continue  # Prompt user again
-        time.sleep(5)        
+        # Get start and end date from user input
+        start_date, end_date = self.get_date_input()
+        # Filter expenses by the chosen date range
+        filtered_expenses = self.filter_expenses_by_date_range(
+            start_date, end_date)
+        # Calculate the total expenses for the selected month
+        total_expenses = sum(float(expense[3])
+                             for expense in filtered_expenses)
+        # Display the total expenses for the chosen month
+        if filtered_expenses:
+            print(f"\nTotal expenses for {
+                  start_date.strftime('%m/%Y')}: {total_expenses:.2f}\n")
+        else:
+            print(f"No expenses found for {start_date.strftime('%m/%Y')}.")
+        time.sleep(5)
         os.system("clear")
 
 # Create an instance of the Summary class with the loaded data
@@ -360,7 +363,7 @@ def menu():
                 summary.view_expenses_by_month()
                 pass
             elif view_choice == 2:
-                # view_expenses_categories()
+                # view_monthly_expenses_categories()
                 pass
             elif view_choice == 3:
                 # view_weekly_expenses()
