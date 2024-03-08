@@ -274,6 +274,8 @@ class Summary:
                 else:
                     print("Invalid choice. Please enter 'y' or 'n'.")
                     continue  # Prompt user again
+        time.sleep(5)        
+        os.system("clear")
 
 # Create an instance of the Summary class with the loaded data
 summary = Summary(expenses_data, income_data)
