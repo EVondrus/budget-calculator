@@ -80,9 +80,9 @@ def add_category(category):
     # Add the category to the expense_categories list
     if category not in expense_categories:
         expense_categories.append(category)
-        print(f"Category '{category}' added successfully.")
+        print(f"Category '{category}' added successfully.\n")
     else:
-        print(f"Category: '{category}' already exists.")
+        print(f"Category '{category}' already exists.")
 
 
 def choose_category():
@@ -179,26 +179,29 @@ class Entry:
             except ValueError:
                 print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
-        # Set Defaults for Description and Category for Income
-        if not is_additional:
-            self.description = "Monthly Income"
-            self.category = "Monthly Income"
-            # Print the description for monthly income
-            print(f"{self.description}\n")
+        # For expenses, always allow the user to choose or create a category
+        if is_expense:
+            self.category = choose_category()
         else:
-            while True:
-                # User set Description and default Category
-                description = input("Enter description (max 12 characters):\n")
-                print()
-                if description.strip() == "":
-                    print("Description cannot be empty. Please enter a description.")
-                elif 1 <= len(description) <= 12:
-                    self.description = description
+            # Set Defaults for Description and Category for Monthly Income
+            if not is_additional:
+                self.description = "Monthly Income"
+                self.category = "Monthly Income"
+                print(f"{self.description}\n")
+            else:
+                while True:
+                    # User set Description and default Category for Additional Income
                     self.category = "Extra Income"
-                    break
-                else:
-                    print(
-                        "The description must be between 1 and 12 characters. Please try again.")
+                    print(f"{self.category}\n")
+                    description = input("Enter description (max 12 characters):\n")
+                    print()
+                    if description.strip() == "":
+                        print("Description cannot be empty. Please enter a description.")
+                    elif 1 <= len(description) <= 12:
+                        self.description = description
+                        break
+                    else:
+                        print("The description must be between 1 and 12 characters. Please try again.")
 
         while True:
             # Input Amount for Income and Expense
@@ -222,7 +225,7 @@ class IncomeEntry(Entry):
         Adds monthly income with a fixed description ("Monthly Income").
         """
         self.collect_data(is_additional=False, is_expense=False)
-        self.add_to_sheet(worksheet, "income")
+        self.add_to_sheet(worksheet, "income", "Monthly Income")
 
     def add_additional_income(self, worksheet):
         """
@@ -230,7 +233,7 @@ class IncomeEntry(Entry):
         and adds it to the Google Sheet "income".
         """
         self.collect_data(is_additional=True, is_expense=False)
-        self.add_to_sheet(worksheet, "income")
+        self.add_to_sheet(worksheet, "income", "Extra Income")
 
 
 class ExpenseEntry(Entry):
