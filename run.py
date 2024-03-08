@@ -132,15 +132,20 @@ class Entry:
         """
         next_row = len(worksheet.col_values(1)) + 1
         income_data = [self.date, self.description, category, self.amount]
-        worksheet.insert_row(income_data, index=next_row)
-        if entry_type == "income":
-            print_slow("Income added successfully!\n")
-            print(f"You added {self.amount:.2f} to your Incomes")
-        elif entry_type == "expense":
-            print_slow("Expense added successfully!\n")
-            print(f"You spent {self.amount:.2f} on {self.description}")
+        try:
+            worksheet.insert_row(income_data, index=next_row)
+            if entry_type == "income":
+                print_slow("Income added successfully!\n")
+                print(f"You added {self.amount:.2f} to your Incomes")
+            elif entry_type == "expense":
+                print_slow("Expense added successfully!\n")
+                print(f"You spent {self.amount:.2f} on {self.description}")
+        except gspread.exceptions.APIError as e:
+            print(f"An error occurred while interacting with the Google Sheets API: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
         time.sleep(5)
-        # os.system("clear")
+        os.system("clear")
 
     def collect_data(self, is_additional=False, is_expense=False):
         """
