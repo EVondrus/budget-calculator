@@ -15,14 +15,26 @@ SCOPE = [
 # Load Google service account credentials from a JSON file
 CREDS = Credentials.from_service_account_file("creds.json")
 SCOPE_CREDS = CREDS.with_scopes(SCOPE)
-# Authorize the Google Sheets API client
-GSPREAD_CLIENT = gspread.authorize(SCOPE_CREDS)
-# Open the Google Sheets document named 'budget_calculator'
-SHEET = GSPREAD_CLIENT.open("budget_calculator")
+
+try:
+    # Authorize the Google Sheets API client
+    GSPREAD_CLIENT = gspread.authorize(SCOPE_CREDS)
+    # Open the Google Sheets document named 'budget_calculator'
+    SHEET = GSPREAD_CLIENT.open("budget_calculator")
+except gspread.exceptions.APIError as e:
+    print(f"An error occurred while accessing the Google Sheets API: {e}")
+    exit()
 
 # Access the 'income' and 'expenses' worksheets within the Google Sheets document
-income = SHEET.worksheet("income")
-expenses = SHEET.worksheet("expenses")
+try:
+    income = SHEET.worksheet("income")
+    expenses = SHEET.worksheet("expenses")
+except gspread.exceptions.WorksheetNotFound:
+    print("The specified worksheet could not be found.")
+    exit()
+except gspread.exceptions.APIError as e:
+    print(f"An error occurred while accessing the worksheets: {e}")
+    exit()
 
 # Retrieve all existing data from the 'income' and 'expenses' worksheets
 income_data = income.get_all_values()
