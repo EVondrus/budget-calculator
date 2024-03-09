@@ -168,40 +168,36 @@ class Entry:
         date = today
         # Input for Date
         while True:
-            user_input = input("Date of entry (YYYY-MM-DD):\n")
-            if not user_input:
+            date_input = input("Date of entry (YYYY-MM-DD):\n")
+            if not date_input:
                 print(f"The new entry is automatically saved on today's date: {today}\n")
                 break
             try:
                 datetime.strptime(user_input, "%Y-%m-%d")
-                date = user_input
+                date = date_input
                 break
             except ValueError:
                 print("Invalid date format. Please enter the date in YYYY-MM-DD format.")
 
-        # For expenses, always allow the user to choose or create a category
-        if is_expense:
-            self.category = choose_category()
+        # Set Defaults for Description and Category for Income
+        if not is_additional:
+            self.description = "Monthly Income"
+            self.category = "Monthly Income"
+            # Print the description for monthly income
+            print(f"{self.description}\n")
         else:
-            # Set Defaults for Description and Category for Monthly Income
-            if not is_additional:
-                self.description = "Monthly Income"
-                self.category = "Monthly Income"
-                print(f"{self.description}\n")
-            else:
-                while True:
-                    # User set Description and default Category for Additional Income
+            while True:
+                # User set Description and default Category
+                description = input("Enter description (max 12 characters):\n")
+                print()
+                if description.strip() == "":
+                    print("Description cannot be empty. Please enter a description.")
+                elif 1 <= len(description) <= 12:
+                    self.description = description
                     self.category = "Extra Income"
-                    print(f"{self.category}\n")
-                    description = input("Enter description (max 12 characters):\n")
-                    print()
-                    if description.strip() == "":
-                        print("Description cannot be empty. Please enter a description.")
-                    elif 1 <= len(description) <= 12:
-                        self.description = description
-                        break
-                    else:
-                        print("The description must be between 1 and 12 characters. Please try again.")
+                    break
+                else:
+                    print("The description must be between 1 and 12 characters. Please try again.")
 
         while True:
             # Input Amount for Income and Expense
@@ -234,7 +230,6 @@ class IncomeEntry(Entry):
         """
         self.collect_data(is_additional=True, is_expense=False)
         self.add_to_sheet(worksheet, "income", "Extra Income")
-
 
 class ExpenseEntry(Entry):
     def add_expense(self, worksheet):
