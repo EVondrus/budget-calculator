@@ -257,7 +257,8 @@ class Summary:
             year = input("Enter the year (YYYY): \n")
             try:
                 # Convert month and year to start_date
-                start_date = datetime.strptime(f"{year}-{month}-01", "%Y-%m-%d")
+                start_date = datetime.strptime(
+                    f"{year}-{month}-01", "%Y-%m-%d")
                 # Calculate end_date assuming 31 days in a month
                 end_date = start_date + timedelta(days=31)
                 # Return start_date and end_date as a tuple
@@ -273,7 +274,7 @@ class Summary:
         # Iterate through each row in the expenses data and filter based on date range
         return [row for row in self.expenses_data[1:]
                 if start_date <= datetime.strptime(row[0], "%Y-%m-%d") < end_date]
-                
+
     def view_expenses_by_month(self):
         """
         Allows the user to view all expenses for a chosen month and displays the total.
@@ -292,6 +293,7 @@ class Summary:
                   start_date.strftime('%m/%Y')}: {total_expenses:.2f}\n")
         else:
             print(f"No expenses found for {start_date.strftime('%m/%Y')}.")
+
         time.sleep(5)
         os.system("clear")
 
