@@ -173,7 +173,7 @@ class Entry:
                 print(f"The new entry is automatically saved on today's date: {today}\n")
                 break
             try:
-                datetime.strptime(user_input, "%Y-%m-%d")
+                datetime.strptime(date_input, "%Y-%m-%d")
                 date = date_input
                 break
             except ValueError:
@@ -187,6 +187,9 @@ class Entry:
             print(f"{self.description}\n")
         else:
             while True:
+                if is_additional and is_expense is False:
+                    self.category = "Extra Income"
+                    print(f"{self.category}\n")
                 # User set Description and default Category
                 description = input("Enter description (max 12 characters):\n")
                 print()
@@ -194,7 +197,6 @@ class Entry:
                     print("Description cannot be empty. Please enter a description.")
                 elif 1 <= len(description) <= 12:
                     self.description = description
-                    self.category = "Extra Income"
                     break
                 else:
                     print("The description must be between 1 and 12 characters. Please try again.")
