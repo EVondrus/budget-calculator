@@ -377,10 +377,26 @@ class Summary:
 
     def view_expenses_by_month(self):
         """
-        Allows the user to view all expenses for a chosen month and displays the total.
-        """
+            Allows the user to view all expenses for 
+            a chosen month and displays the total.
+            """
+        # Get start and end date from user input
         start_date, end_date = self.get_date_input()
-        self.view_expenses_by_category(start_date, end_date)
+         # Filter expenses by the chosen date range
+        filtered_expenses = self.filter_expenses_by_date_range(
+              start_date, end_date)
+          # Calculate the total expenses for the selected month
+        total_expenses = sum(float(expense[3])
+                                for expense in filtered_expenses)
+           # Display the total expenses for the chosen month
+        if filtered_expenses:
+                print(f"\nTotal expenses for {
+                      start_date.strftime('%m/%Y')}: {total_expenses:.2f}\n")
+        else:
+            print(f"No expenses found for {start_date.strftime('%m/%Y')}.")
+
+        time.sleep(5)
+        os.system("clear")
 
 
 # Instance of the Summary class with the loaded data
@@ -451,8 +467,7 @@ def menu():
             )
 
             if view_choice == 1:
-                start_date, end_date = summary.get_date_input()
-                summary.view_expenses_by_category(start_date, end_date)
+                summary.view_expenses_by_month()
 
             elif view_choice == 2:
                 start_date, end_date = summary.get_date_input()
