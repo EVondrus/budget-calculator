@@ -322,6 +322,26 @@ class Summary:
                 print("Invalid year. Please try again.")
                 continue
 
+    def get_weekly_date_input(self):
+        """
+        Prompts the user for a date, validates the input,
+        and returns a tuple of start_date, end_date for the week.
+        """
+        while True:
+            try:
+                date_input = input("Please enter a date (YYYY-MM-DD): \n")
+                selected_date = datetime.strptime(date_input, "%Y-%m-%d")
+                # Calculate start and end dates of the week
+                start_date = selected_date - timedelta(
+                    days=selected_date.weekday())
+                end_date = start_date + timedelta(days=6)
+                return start_date, end_date
+
+            except ValueError:
+                print("Invalid date format."
+                      "Please enter the date in the format YYYY-MM-DD.")
+                continue
+
     def filter_expenses_by_date_range(self, start_date, end_date):
         """
         Filters expenses data based on a given date range.
@@ -338,11 +358,11 @@ class Summary:
         Calculates the total income for a given date range.
         """
         total_income = 0
-        for row in self.income_data[1:]: # Skip the header row
+        for row in self.income_data[1:]:  # Skip the header row
             income_date = datetime.strptime(row[0], "%Y-%m-%d")
             if start_date <= income_date <= end_date:
-                # Remove the comma from the amount string before converting to float
-                # Bug solved: 
+                # Remove comma from amount string before converting to float
+                # Bug solved:
                 # https://docs.python.org/3/library/stdtypes.html#str.replace
                 amount_str_wo_comma = row[3].replace(',', '')
                 total_income += float(amount_str_wo_comma)
@@ -427,6 +447,55 @@ class Summary:
             print(f"No expenses found for {start_date.strftime('%B %Y')}.")
 
         time.sleep(5)
+        os.system("clear")
+
+    def view_weekly_expenses(self):
+        """
+        Displays the total expenses for each week in a chosen month.
+        """
+        # https://docs.python.org/3/library/datetime.html, import calendar??
+        # Get start and end date from user input
+        start_date, end_date = self.get_date_input()
+
+        # Calculate the number of weeks in the month
+        weeks_in_month = (end_date - start_date).days // 7 + 1
+
+        # Initialize total expenses for the month
+        total_expenses_month = 0
+
+        # Iterate over each week in the month
+        for week_number in range(weeks_in_month):
+            # Calculatestart and end dates for the current week
+            week_start_date = start_date + timedelta(days=week_number * 7)
+            week_end_date = week_start_date + timedelta(days=6)
+
+            # Filter expenses by the current week's date range
+            filtered_expenses = self.filter_expenses_by_date_range(
+                week_start_date, week_end_date)
+
+            # Calculate total expenses for the current week
+            total_expenses_week = self.calculate_total_expenses(
+                filtered_expenses)
+
+            # Add the week's total expenses to the month's total
+            total_expenses_month += total_expenses_week
+
+            # Display total expenses for the current week
+            if filtered_expenses:
+                print(f"\nTotal expenses"
+                      f" for week {week_start_date.strftime('%U')} of "
+                      f"{week_start_date.strftime('%Y')}: "
+                      f"{total_expenses_week:.2f}\n")
+            else:
+                print(f"No expenses found for week: "
+                      f"{week_start_date.strftime('%U')} of "
+                      f"{week_start_date.strftime('%Y')}.")
+
+        # Display total expenses for the entire month
+        print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: "
+              f"{total_expenses_month:.2f}\n")
+
+        time.sleep(20)
         os.system("clear")
 
 
