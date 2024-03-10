@@ -333,33 +333,54 @@ class Summary:
             )
         ]
 
-    def view_expenses_by_month(self):
+    def calculate_expenses_by_category(self, expenses):
         """
-        Allows the user to view all expenses
-        for a chosen month and displays the total.
+        Calculates the total expenses by category from a list of expenses.
+        
         """
-        # Get start and end date from user input
-        start_date, end_date = self.get_date_input()
-        # Filter expenses by the chosen date range
+        expenses_by_category = {}
+        for expense in expenses:
+            # Assuming the category is in the third column
+            category = expense[2]
+            # Assuming the amount is in the fourth column
+            amount = float(expense[3])
+            if category in expenses_by_category:
+                expenses_by_category[category] += amount
+            else:
+                expenses_by_category[category] = amount
+        return expenses_by_category
+
+    def view_expenses_by_category(self, start_date, end_date):
+        """
+        Displays the expenses by category for a given date range.
+        """
         filtered_expenses = self.filter_expenses_by_date_range(
-            start_date, end_date
-        )
-        # Calculate the total expenses for the selected month
-        total_expenses = sum(float(expense[3])
-                             for expense in filtered_expenses)
-        # Display the total expenses for the chosen month
-        if filtered_expenses:
-            print("\nTotal expenses for " +
-                  start_date.strftime('%m/%Y') + ": " +
-                  f"{total_expenses:.2f}\n")
-        else:
-            print(
-                f"No expenses found for "
-                f"{start_date.strftime('%m/%Y')}"
-            )
+                            start_date, end_date
+                            )
+        expenses_by_category = self.calculate_expenses_by_category(
+                            filtered_expenses
+                            )
+
+        # Convert the dictionary to a list of tuples for easier sorting
+        expenses_list = list(expenses_by_category.items())
+
+        # Sort the list by category name
+        expenses_list.sort(key=lambda x: x[0])
+
+        # Display the total expenses for each category in a list
+        print("\nExpenses by Category:\n")
+        for category, total in expenses_list:
+            print(f"{category}: {total:.2f}")
 
         time.sleep(5)
         os.system("clear")
+
+    def view_expenses_by_month(self):
+        """
+        Allows the user to view all expenses for a chosen month and displays the total.
+        """
+        start_date, end_date = self.get_date_input()
+        self.view_expenses_by_category(start_date, end_date)
 
 
 # Instance of the Summary class with the loaded data
@@ -430,9 +451,13 @@ def menu():
             )
 
             if view_choice == 1:
-                summary.view_expenses_by_month()
+                start_date, end_date = summary.get_date_input()
+                summary.view_expenses_by_category(start_date, end_date)
+
             elif view_choice == 2:
-                pass  # Implement functionality
+                start_date, end_date = summary.get_date_input()
+                summary.view_expenses_by_category(start_date, end_date)
+                
             elif view_choice == 3:
                 pass  # Implement functionality
             elif view_choice == 4:
