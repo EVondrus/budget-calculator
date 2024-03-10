@@ -332,7 +332,23 @@ class Summary:
                 start_date <= datetime.strptime(row[0], "%Y-%m-%d") < end_date
             )
         ]
-    
+
+    def calculate_total_income(self, start_date, end_date):
+        """
+        Calculates the total income for a given date range.
+        """
+        total_income = 0
+        for row in self.income_data[1:]: # Skip the header row
+            income_date = datetime.strptime(row[0], "%Y-%m-%d")
+            if start_date <= income_date <= end_date:
+                # Remove the comma from the amount string before converting to float
+                # Bug solved: 
+                # https://docs.python.org/3/library/stdtypes.html#str.replace
+                amount_str_wo_comma = row[3].replace(',', '')
+                total_income += float(amount_str_wo_comma)
+
+        return total_income
+
     def calculate_total_expenses(self, expenses):
         """
         Calculates the total expenses from a list of expenses.
@@ -342,7 +358,7 @@ class Summary:
     def calculate_expenses_by_category(self, expenses):
         """
         Calculates the total expenses by category from a list of expenses.
-        
+
         """
         expenses_by_category = {}
 
@@ -356,6 +372,14 @@ class Summary:
             else:
                 expenses_by_category[category] = amount
         return expenses_by_category
+
+    def calculate_remaining_income(self, total_income, total_expenses):
+        """
+        Calculates the remaining income after subtracting
+        total expenses from total income.
+        """
+        remaining_income = total_income - total_expenses
+        return remaining_income
 
     def view_expenses_by_category(self, start_date, end_date):
         """
@@ -384,17 +408,21 @@ class Summary:
 
     def view_monthly_expenses(self):
         """
-        Allows the user to view all expenses for a chosen month and displays the total.
+        Allows the user to view all expenses for a
+        chosen month and displays the total.
         """
         # Get start and end date from user input
         start_date, end_date = self.get_date_input()
         # Filter expenses by the chosen date range
-        filtered_expenses = self.filter_expenses_by_date_range(start_date, end_date)
+        filtered_expenses = self.filter_expenses_by_date_range(
+            start_date, end_date
+        )
         # Calculate the total expenses for the selected month
         total_expenses = self.calculate_total_expenses(filtered_expenses)
         # Display the total expenses for the chosen month
         if filtered_expenses:
-            print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: {total_expenses:.2f}\n")
+            print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: "
+                  f"{total_expenses:.2f}\n")
         else:
             print(f"No expenses found for {start_date.strftime('%B %Y')}.")
 
@@ -475,9 +503,9 @@ def menu():
             elif view_choice == 2:
                 start_date, end_date = summary.get_date_input()
                 summary.view_expenses_by_category(start_date, end_date)
-                
+
             elif view_choice == 3:
-                pass  # Implement functionality
+                summary.view_weekly_expenses()
             elif view_choice == 4:
                 pass  # Implement functionality
             elif view_choice == 5:
