@@ -3,7 +3,7 @@ The Budget Calculator provides a simple yet effective solution for managing pers
 
 The live link can be found here - [Budget Calculator](https://budget-calculator-evo-f9181bd7422d.herokuapp.com/)
 
-![Flowchart]()
+![AmIResponsive]()
 
 ## How to Use
 The Budget Calculator is designed to be user-friendly, allowing you to manage your finances with ease. Here's a step-by-step guide on how to use its features:
@@ -200,7 +200,10 @@ To exit the Budget Calculator, follow these steps:
 - Integration with Financial Institutions: Allow users to sync their bank accounts and credit cards with the budget calculator to automatically import transactions and update their budget in real-time.
 
 ## Data Model
-In the Budget Calculator project, I employed principles of Object-Oriented Programming to create a modular and maintainable application. The application is centered around four main classes, each with a distinct responsibility:
+In the Budget Calculator project, I employed principles of Object-Oriented Programming to create a modular and maintainable application. The application is centered around four main classes, each with a distinct responsibility.
+
+<details>
+  <summary>Classes of the Budget Calculator</summary>
 
 - **Entry**:
     The Entry class serves as the foundation for all financial entries, whether they are incomes or expenses. It encapsulates the common attributes and behaviors of financial entries, such as:
@@ -233,15 +236,23 @@ In the Budget Calculator project, I employed principles of Object-Oriented Progr
         - Viewing weekly and monthly expenses.
         - Viewing expenses by category.
         - Viewing monthly and yearly summaries.
+</details>
 
 ## Testing TBC...
 
 ### PEP8 Testing 
 The python file have all been passed through [CI Python Linter](https://pep8ci.herokuapp.com/) The files were checked with no errors. See screen show below:
 
+![Py testing]()
+
+All of the below tests were completed in my local terminal and also in the Heroku terminal.
+
 
 ### Input Testing
 All user inputs in the Budget Calculator application were thoroughly tested to ensure that all input data is handled correctly and that appropriate feedback is given to the user. The testing covered various aspects of user interaction, including input validation, error handling, and the application's response to different types of input. Here's a detailed breakdown of the testing conducted:
+
+<details>
+  <summary>View Input Tests</summary>
 
 - Menu Options Selection: 
     - The menu options were tested to ensure that only valid numbers corresponding to the available options are selectable.
@@ -269,17 +280,21 @@ All user inputs in the Budget Calculator application were thoroughly tested to e
     - Category inputs must not exceed 12 characters to fit the columns in the Google sheet.
 
 ![Input Validation]()
+</details>
 
 ### Other Testing
-The Budget Calculator was tested thoroughly to ensure the following features worked as intended: 
+The Budget Calculator was tested thoroughly to ensure the following features worked as intended.
+
+<details>
+  <summary>View Other Tests</summary> 
 - The application was tested to ensure that adding new income or expenses correctly updates the summary. The stored information was verified for accuracy.
 - The summaries were examined to ensure they display accurate information, with proper sorting of data.
 - After successful inputs and operations, the application provided appropriate feedback to the user, confirming actions taken (e.g., addition of income or expense).
 - The application was tested to ensure that any category selected or created by the user exists in the list of predefined categories.
 - The creation of new categories was tested so that the user is not able to create a category that alredy exists in the list.
 - During testing, error messages were deliberately triggered to confirm they provide clear and relevant information to the user, aiding in troubleshooting.
+</details>
 
-All of the above tests were completed in my local terminal and also in the Heroku terminal.
 
 ## Libraries and Technologies Used
 
@@ -306,6 +321,9 @@ The website was deployed using Heroku [Heroku](https://dashboard.heroku.com/apps
 Prior to deploying to Heroku, the command pip3 freeze > requirements.txt was used to list all the dependencies required for the Budget Calculator to run. This step is necessary for Heroku deployment.
 
 The following steps were then taken:
+<details>
+  <summary>Heroku Deployment</summary>
+
 1. Log in to [Heroku](https://dashboard.heroku.com/apps) or create an account.
 2. On the main page click the button labelled New in the top right corner and from the drop-down menu select "Create New App".
 3. Enter a unique and meaningful app name.
@@ -324,6 +342,7 @@ The following steps were then taken:
 16. Click View to view the deployed site.
 
 The site is now live and operational.
+</details>
 
 ## Credits  TBC
 ### Resources Used
