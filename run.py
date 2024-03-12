@@ -6,6 +6,10 @@ import calendar
 
 from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init(autoreset=True)
 
 if __name__ == "__main__":
     # Define the scope required for accessing Google Sheets
@@ -26,7 +30,9 @@ if __name__ == "__main__":
         SHEET = GSPREAD_CLIENT.open("budget_calculator")
 
     except gspread.exceptions.APIError as e:
-        print(f"An error occurred while accessing the Google Sheets API: {e}")
+        print(Fore.RED +
+              f"An error occurred while accessing the Google Sheets API: {e}")
+        print("Please check your internet connection and try again.")
         exit()
 
     # Access the 'income' and 'expenses' worksheets
@@ -36,11 +42,12 @@ if __name__ == "__main__":
         expenses = SHEET.worksheet("expenses")
 
     except gspread.exceptions.WorksheetNotFound:
-        print("The specified worksheet could not be found.")
+        print(Fore.RED + "The specified worksheet could not be found.")
         exit()
 
     except gspread.exceptions.APIError as e:
-        print(f"An error occurred while accessing the worksheets: {e}")
+        print(Fore.RED +
+              f"An error occurred while accessing the worksheets: {e}")
         exit()
 
     # Retrieve all existing data from the 'income' and 'expenses' worksheets
@@ -49,6 +56,26 @@ if __name__ == "__main__":
 
     # Extract expense categories from the third column
     expense_categories = list(set([row[2] for row in expenses_data[1:]]))
+
+    def print_slow(text):
+        """
+        Print each character of the text with a delay, including color codes.
+        """
+        # Slow down the printing of each character
+        for char in text:
+            print(char, end="", flush=True)
+            time.sleep(0.1)
+
+    def display_welcome_message():
+        
+        print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
+        time.sleep(1) # Corrected to use 1.5 seconds
+        print(Fore.GREEN + "This application helps you track your income and expenses")
+        print(Fore.GREEN + "providing insights into your financial health.\n")
+        time.sleep(1.5) # Corrected to use 1.5 seconds
+        print("Please press Enter to continue.")
+        input()
+        os.system("clear")
 
     def get_number_choice(input_title, valid_choices):
         """
@@ -64,19 +91,12 @@ if __name__ == "__main__":
                 if user_input in valid_choices:
                     input_is_valid = True
                 else:
-                    print(f"Please enter one of these numbers:{valid_choices}")
+                    print(Fore.YELLOW +
+                          f"Please enter one of these numbers:{valid_choices}")
             except ValueError:
-                print("Only numbers allowed")
+                print(Fore.RED + "Only numbers allowed!")
         os.system("clear")
         return user_input
-
-    def print_slow(text):
-        """
-        Print each character of the text with a delay.
-        """
-        for char in text:
-            print(char, end="", flush=True)
-            # time.sleep(0.1)
 
     def add_category(category):
             """
@@ -87,12 +107,13 @@ if __name__ == "__main__":
             # Add the category to the expense_categories list
             if category not in expense_categories:
                 expense_categories.append(category)
-                print(f"Category '{category}' added successfully.\n")
+                print(Fore.GREEN + f"Category '{category}' added successfully.\n")
                 time.sleep(3)
                 os.system("clear")
 
             else:
-                print(f"Category '{category}' already exists.")
+                print(Fore.RED + f"Category '{category}' already exists.")
+                print("Please enter a new category name\n")
 
     def choose_category():
         """
@@ -103,14 +124,14 @@ if __name__ == "__main__":
 
         # Loop until a valid category is chosen
         while True:
-            print("Select category by number:")
+            print(Fore.YELLOW + "Select category by number:")
 
             # Print categories with numbers starting from 1
             for i, category in enumerate(expense_categories, start=1):
                 print(f"{i}. {category}")
 
             # Add an option for the user to create a new category
-            print(f"{len(expense_categories) + 1}. Create a new category\n")
+            print(Fore.GREEN + f"{len(expense_categories) + 1}. Create a new category\n")
 
             # Generate a list of valid choices (category numbers)
             # including the option for creating a new category
@@ -118,7 +139,7 @@ if __name__ == "__main__":
             valid_choices = list(range(1, len(expense_categories) + 2))
 
             # Use get_number_choice function to get the validated user's choice
-            category_choice = get_number_choice(
+            category_choice = get_number_choice(Fore.YELLOW + 
                 "Select your choice:\n", valid_choices)
 
             # If the user chose to create a new category
@@ -126,7 +147,7 @@ if __name__ == "__main__":
             if category_choice == len(expense_categories) + 1:
 
                 while True:
-                    category = input("Enter the name of the new category:\n")
+                    category = input(Fore.YELLOW + "Enter the name of the new category:\n")
 
                     # Check if the category already exists in the list
                     if category not in expense_categories:
@@ -134,7 +155,7 @@ if __name__ == "__main__":
                         add_category(category)
                         break
                     else:
-                        print(f"'{category}' already exists in the list.\n")
+                        print(Fore.RED + f"'{category}' already exists in the list.\n")
                         print("Enter a new category or choose from the list.")
                 break  # Exit the loop after adding a new category
 
@@ -168,19 +189,20 @@ if __name__ == "__main__":
             try:
                 worksheet.insert_row(income_data, index=next_row)
                 if entry_type == "income":
-                    print_slow("Income added successfully!\n")
+                    print_slow(Fore.GREEN + "Income added successfully!\n")
                     print(f"You added {self.amount:.2f} to your Incomes")
 
                 elif entry_type == "expense":
-                    print_slow("Expense added successfully!\n")
+                    print_slow(Fore.GREEN + "Expense added successfully!\n")
                     print(f"You spent {self.amount:.2f} on {self.description}")
 
             except gspread.exceptions.APIError as e:
-                print(f"An error occurred:")
-                print("While interacting with the Google Sheets API: {e}")
+                print(Fore.RED + "An error occurred:")
+                print(Fore.RED + f"While interacting with the Google Sheets API: {e}")
+                print("Please check your internet connection and try again.")
 
             except Exception as e:
-                print(f"An unexpected error occurred: {e}")
+                print(Fore.RED + f"An unexpected error occurred: {e}")
 
             time.sleep(5)
             os.system("clear")
@@ -190,7 +212,7 @@ if __name__ == "__main__":
             Collects user input for date, category, description, and amount.
             """
             today = datetime.now().strftime("%Y-%m-%d")
-            print(f"Today's date is: {today}.")
+            print(Fore.YELLOW + f"Today's date is: {today}.")
             print(f"Press Enter to choose today's date or input a new date:\n")
 
             date = today
@@ -199,7 +221,7 @@ if __name__ == "__main__":
                 date_input = input("Date of entry (YYYY-MM-DD):\n")
 
                 if not date_input:
-                    print(f"Automatically saved on today's date: {today}\n")
+                    print(Fore.GREEN + f"Automatically saved on today's date: {today}\n")
                     break
 
                 try:
@@ -208,7 +230,7 @@ if __name__ == "__main__":
                     break
 
                 except ValueError:
-                    print("Invalid date format!")
+                    print(Fore.RED + "Invalid date format!")
                     print("Please enter the date in YYYY-MM-DD format.")
 
             # Set Defaults for Description and Category for Income
@@ -216,13 +238,13 @@ if __name__ == "__main__":
                 self.description = "Monthly Income"
                 self.category = "Monthly Income"
                 # Print the description for monthly income
-                print(f"{self.description}\n")
+                print(Fore.GREEN + f"{self.category}\n")
 
             else:
                 while True:
                     if is_additional and is_expense is False:
                         self.category = "Extra Income"
-                        print(f"{self.category}\n")
+                        print(Fore.GREEN + f"{self.category}\n")
 
                     # User set Description and default Category
                     description = input(
@@ -230,7 +252,7 @@ if __name__ == "__main__":
                     print()
 
                     if description.strip() == "":
-                        print(
+                        print(Fore.RED + 
                             "Description cannot be empty."
                             "Please enter a description."
                         )
@@ -240,7 +262,7 @@ if __name__ == "__main__":
                         break
 
                     else:
-                        print("The description must be between"
+                        print(Fore.RED + "The description must be between"
                               "1 and 12 characters. Please try again.")
 
             while True:
@@ -250,13 +272,13 @@ if __name__ == "__main__":
                     print()
 
                     if amount < 0:
-                        print("Amount must be a positive number."
+                        print(Fore.RED + "Amount must be a positive number."
                               "Please try again.")
                     else:
                         break
 
                 except ValueError:
-                    print("Invalid input. Please enter a number.")
+                    print(Fore.RED + "Invalid input. Please enter a number.")
 
             self.date = date
             self.amount = amount
@@ -305,7 +327,7 @@ class Summary:
             try:
                 month = int(input("Enter the month (MM): \n"))
                 if not (1 <= month <= 12):
-                    print("Invalid month. Please enter a month between 01 and 12.")
+                    print(Fore.RED + "Invalid month. Please enter a month between 01 and 12.")
                     continue
 
                 year = int(input("Enter the year (YYYY): \n"))
@@ -321,9 +343,9 @@ class Summary:
                 return start_date, end_date
 
             except ValueError:
-                print("Invalid input. Please enter a valid month and/or year.")
+                print(Fore.RED + "Invalid input. Please enter a valid month and/or year.")
             except TypeError:
-                print("Invalid input type. Please enter numbers for the month and year.")
+                print(Fore.RED + "Invalid input type. Please enter numbers for the month and year.")
 
     def get_weekly_date_input(self):
         """
@@ -332,7 +354,8 @@ class Summary:
         """
         while True:
             try:
-                date_input = input("Please enter a date (YYYY-MM-DD): \n")
+                date_input = input(
+                    Fore.YELLOW + "Please enter a date (YYYY-MM-DD): \n")
                 selected_date = datetime.strptime(date_input, "%Y-%m-%d")
                 # Calculate start and end dates of the week
                 start_date = selected_date - timedelta(
@@ -341,7 +364,7 @@ class Summary:
                 return start_date, end_date
 
             except ValueError:
-                print("Invalid date format."
+                print(Fore.RED + "Invalid date format."
                       "Please enter the date in the format YYYY-MM-DD.")
                 continue
 
@@ -386,9 +409,9 @@ class Summary:
         expenses_by_category = {}
 
         for expense in expenses:
-            # Assuming the category is in the third column
+            # Category is in the third column
             category = expense[2]
-            # Assuming the amount is in the fourth column
+            # Amount is in the fourth column
             amount = float(expense[3])
             if category in expenses_by_category:
                 expenses_by_category[category] += amount
@@ -422,7 +445,7 @@ class Summary:
         expenses_list.sort(key=lambda x: x[0])
 
         # Display the total expenses for each category in a list
-        print("\nExpenses by Category:\n")
+        print(Fore.YELLOW + "\nExpenses by Category:\n")
         for category, total in expenses_list:
             print(f"{category}: {total:.2f}")
 
@@ -438,8 +461,7 @@ class Summary:
         start_date, end_date = self.get_date_input()
         # Filter expenses by the chosen date range
         filtered_expenses = self.filter_expenses_by_date_range(
-            start_date, end_date
-        )
+            start_date, end_date)
         # Calculate the total expenses for the selected month
         total_expenses = self.calculate_total_expenses(filtered_expenses)
         # Display the total expenses for the chosen month
@@ -447,7 +469,8 @@ class Summary:
             print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: "
                   f"{total_expenses:.2f}\n")
         else:
-            print(f"No expenses found for {start_date.strftime('%B %Y')}.")
+            print(
+                Fore.RED + f"No expenses found for {start_date.strftime('%B %Y')}.")
 
         time.sleep(15)
         os.system("clear")
@@ -470,7 +493,7 @@ class Summary:
                     start_date, end_date)
 
                 if not filtered_expenses:
-                    print(f"No expenses found for week {week_number} of "
+                    print(Fore.RED + f"No expenses found for week {week_number} of "
                           f"{start_date.year}, "
                           f"from: {start_date.strftime('%Y-%m-%d')} "
                           f"to: {end_date.strftime('%Y-%m-%d')}.\n")
@@ -492,21 +515,22 @@ class Summary:
 
                 # Display the total expenses for the chosen week
                 # including the week number
-                print("\nWeekly Expenses\n")
+                print(Fore.YELLOW + "\nWeekly Expenses\n")
                 print(f"Week: {week_number} of {start_date.year}")
                 print(f"From: {start_date.strftime('%Y-%m-%d')} to "
                       f"{end_date.strftime('%Y-%m-%d')}")
                 print(f"Total Expenses: {total_expenses:.2f}\n")
-                print(f"Remaining Income After Expenses: "
+                print(Fore.YELLOW + f"Remaining Income After Expenses: "
                       f"{remaining_income:.2f}\n")
 
                 break  # Exit the loop if expenses are found and displayed
 
             except ValueError as e:
-                print(f"An error occurred while processing the date: {e}")
+                print(
+                    Fore.RED + f"An error occurred while processing the date: {e}")
                 continue
             except Exception as e:
-                print(f"An unexpected error occurred: {e}")
+                print(Fore.RED + f"An unexpected error occurred: {e}")
                 break  # Exit the loop if an unexpected error occurs
 
         time.sleep(15)
@@ -537,11 +561,11 @@ class Summary:
 
         os.system("clear")
 
-        print("\nMonthly Summary\n")
+        print(Fore.YELLOW + "\nMonthly Summary\n")
         print(f"Month: {start_date.strftime('%B %Y')}\n")
         print(f"Total Income: {total_income:.2f}\n")
         print(f"Total Expenses: {total_expenses:.2f}\n")
-        print(f"Remaining Income: {remaining_income:.2f}\n")
+        print(Fore.YELLOW + f"Remaining Income: {remaining_income:.2f}\n")
 
         time.sleep(15)
         os.system("clear")
@@ -574,11 +598,11 @@ class Summary:
 
         os.system("clear")
 
-        print("\nYearly Summary\n")
+        print(Fore.YELLOW + "\nYearly Summary\n")
         print(f"Year: {year}\n")
         print(f"Total Income: {total_income:.2f}\n")
         print(f"Total Expenses: {total_expenses:.2f}\n")
-        print(f"Remaining Income: {remaining_income:.2f}\n")
+        print(Fore.YELLOW + f"Remaining Income: {remaining_income:.2f}\n")
 
         time.sleep(15)
         os.system("clear")
@@ -593,8 +617,7 @@ def menu():
     Display the menu and options to the user
     """
     while True:  # Use a loop to keep the menu running
-        print_slow("Welcome to the Budget Calculator!\n\n")
-        print("Please choose what you wish to do:\n")
+        print(Fore.YELLOW + "Please choose what you wish to do:\n")
         print("1. Add an Income\n")
         print("2. Add an Expense\n")
         print("3. View Summary\n")
@@ -688,6 +711,7 @@ def menu():
 
 if __name__ == "__main__":
     try:
+        display_welcome_message()
         menu()
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
