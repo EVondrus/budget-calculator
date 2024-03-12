@@ -2,6 +2,7 @@
 import os
 import gspread
 import time
+import calendar
 
 from google.oauth2.service_account import Credentials
 from datetime import datetime, timedelta
@@ -301,32 +302,28 @@ class Summary:
         returns a tuple of start_date, end_date.
         """
         while True:
-
-            month = input("Enter the month (MM): \n")
-
-            if not (1 <= int(month) <= 12):
-                print("Invalid month."
-                      "Please enter a month between 01 and 12.")
-                continue
-
-            year = input("Enter the year (YYYY): \n")
-
             try:
-                # Convert month and year to start_date
-                start_date = datetime.strptime(
-                    f"{year}-{month}-01",
-                    "%Y-%m-%d"
-                )
+                month = int(input("Enter the month (MM): \n"))
+                if not (1 <= month <= 12):
+                    print("Invalid month. Please enter a month between 01 and 12.")
+                    continue
 
-                # Calculate end_date assuming 31 days in a month
-                end_date = start_date + timedelta(days=31)
+                year = int(input("Enter the year (YYYY): \n"))
+
+                # Convert month and year to start_date
+                start_date = datetime.strptime(f"{year}-{month:02d}-01", "%Y-%m-%d")
+
+                # Calculate the last day of the month
+                # Which correctly handles leap years
+                end_date = start_date.replace(day=calendar.monthrange(year, month)[1])
 
                 # Return start_date and end_date as a tuple
                 return start_date, end_date
 
             except ValueError:
-                print("Invalid year. Please try again.")
-                continue
+                print("Invalid input. Please enter a valid month and/or year.")
+            except TypeError:
+                print("Invalid input type. Please enter numbers for the month and year.")
 
     def get_weekly_date_input(self):
         """
@@ -429,7 +426,7 @@ class Summary:
         for category, total in expenses_list:
             print(f"{category}: {total:.2f}")
 
-        time.sleep(5)
+        time.sleep(15)
         os.system("clear")
 
     def view_monthly_expenses(self):
@@ -452,7 +449,7 @@ class Summary:
         else:
             print(f"No expenses found for {start_date.strftime('%B %Y')}.")
 
-        time.sleep(5)
+        time.sleep(15)
         os.system("clear")
 
     def view_weekly_expenses(self):
@@ -511,6 +508,77 @@ class Summary:
             except Exception as e:
                 print(f"An unexpected error occurred: {e}")
                 break  # Exit the loop if an unexpected error occurs
+
+        time.sleep(15)
+        os.system("clear")
+
+        
+    def view_monthly_summary(self):
+        """
+        Displays the total income, total expenses
+        and remaining income for a given month.
+        """
+        # Get start and end date from user input
+        start_date, end_date = self.get_date_input()
+
+        # Calculate the total income for the selected month
+        total_income = self.calculate_total_income(start_date, end_date)
+
+        # Filter expenses by the chosen date range
+        filtered_expenses = self.filter_expenses_by_date_range(
+            start_date, end_date)
+
+        # Calculate total expenses for the selected month
+        total_expenses = self.calculate_total_expenses(filtered_expenses)
+
+        # Calculate remaining income after expenses
+        remaining_income = self.calculate_remaining_income(
+            total_income, total_expenses)
+
+        os.system("clear")
+
+        print("\nMonthly Summary\n")
+        print(f"Month: {start_date.strftime('%B %Y')}\n")
+        print(f"Total Income: {total_income:.2f}\n")
+        print(f"Total Expenses: {total_expenses:.2f}\n")
+        print(f"Remaining Income: {remaining_income:.2f}\n")
+
+        time.sleep(15)
+        os.system("clear")
+
+    def view_yearly_summary(self):
+        """
+        Displays the total income, total expenses
+        and remaining income for a given year.
+        """
+        # Get the year from user input
+        year = input("Enter the year (YYYY): \n")
+
+        # Convert the year to start_date and end_date for the entire year
+        start_date = datetime.strptime(f"{year}-01-01", "%Y-%m-%d")
+        end_date = datetime.strptime(f"{year}-12-31", "%Y-%m-%d")
+
+        # Calculate the total income for the selected year
+        total_income = self.calculate_total_income(start_date, end_date)
+
+        # Filter expenses by the chosen date range
+        filtered_expenses = self.filter_expenses_by_date_range(
+            start_date, end_date)
+
+        # Calculate total expenses for the selected year
+        total_expenses = self.calculate_total_expenses(filtered_expenses)
+
+        # Calculate remaining income after expenses
+        remaining_income = self.calculate_remaining_income(
+            total_income, total_expenses)
+
+        os.system("clear")
+
+        print("\nYearly Summary\n")
+        print(f"Year: {year}\n")
+        print(f"Total Income: {total_income:.2f}\n")
+        print(f"Total Expenses: {total_expenses:.2f}\n")
+        print(f"Remaining Income: {remaining_income:.2f}\n")
 
         time.sleep(15)
         os.system("clear")
@@ -593,9 +661,9 @@ def menu():
             elif view_choice == 3:
                 summary.view_weekly_expenses()
             elif view_choice == 4:
-                pass  # Implement functionality
+                summary.view_monthly_summary()
             elif view_choice == 5:
-                pass  # Implement functionality
+                summary.view_yearly_summary()
             elif view_choice == 6:
                 continue  # Go back to the beginning of the menu loop
 
