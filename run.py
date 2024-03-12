@@ -67,12 +67,12 @@ if __name__ == "__main__":
             time.sleep(0.1)
 
     def display_welcome_message():
-        
         print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
-        time.sleep(1) # Corrected to use 1.5 seconds
-        print(Fore.GREEN + "This application helps you track your income and expenses")
+        time.sleep(1)
+        print(Fore.GREEN + "This application helps you track "
+              "your income and expenses")
         print(Fore.GREEN + "providing insights into your financial health.\n")
-        time.sleep(1.5) # Corrected to use 1.5 seconds
+        time.sleep(1.5)
         print("Please press Enter to continue.")
         input()
         os.system("clear")
@@ -99,21 +99,21 @@ if __name__ == "__main__":
         return user_input
 
     def add_category(category):
-            """
-            Adds a category to the list of expense categories.
-            """
-            global expense_categories
+        """
+        Adds a category to the list of expense categories.
+        """
+        global expense_categories
 
-            # Add the category to the expense_categories list
-            if category not in expense_categories:
-                expense_categories.append(category)
-                print(Fore.GREEN + f"Category '{category}' added successfully.\n")
-                time.sleep(3)
-                os.system("clear")
+        # Add the category to the expense_categories list
+        if category not in expense_categories:
+            expense_categories.append(category)
+            print(Fore.GREEN + f"Category '{category}' added successfully.\n")
+            time.sleep(3)
+            os.system("clear")
 
-            else:
-                print(Fore.RED + f"Category '{category}' already exists.")
-                print("Please enter a new category name\n")
+        else:
+            print(Fore.RED + f"Category '{category}' already exists.")
+            print("Please enter a new category name\n")
 
     def choose_category():
         """
@@ -131,7 +131,8 @@ if __name__ == "__main__":
                 print(f"{i}. {category}")
 
             # Add an option for the user to create a new category
-            print(Fore.GREEN + f"{len(expense_categories) + 1}. Create a new category\n")
+            print(Fore.GREEN + f"{len(expense_categories) + 1}. "
+                  "Create a new category\n")
 
             # Generate a list of valid choices (category numbers)
             # including the option for creating a new category
@@ -139,15 +140,18 @@ if __name__ == "__main__":
             valid_choices = list(range(1, len(expense_categories) + 2))
 
             # Use get_number_choice function to get the validated user's choice
-            category_choice = get_number_choice(Fore.YELLOW + 
-                "Select your choice:\n", valid_choices)
+            category_choice = get_number_choice(
+                Fore.YELLOW + "Select your choice:\n",
+                valid_choices
+            )
 
             # If the user chose to create a new category
             # Check against the index of the new category option
             if category_choice == len(expense_categories) + 1:
 
                 while True:
-                    category = input(Fore.YELLOW + "Enter the name of the new category:\n")
+                    category = input(Fore.YELLOW + "Enter the name of "
+                                     "the new category:\n")
 
                     # Check if the category already exists in the list
                     if category not in expense_categories:
@@ -155,7 +159,8 @@ if __name__ == "__main__":
                         add_category(category)
                         break
                     else:
-                        print(Fore.RED + f"'{category}' already exists in the list.\n")
+                        print(Fore.RED + f"'{category}' already exists "
+                              "in the list.\n")
                         print("Enter a new category or choose from the list.")
                 break  # Exit the loop after adding a new category
 
@@ -164,7 +169,6 @@ if __name__ == "__main__":
                 break  # Exit the loop if an existing category is selected
 
         return category
-
 
     class Entry:
 
@@ -198,7 +202,8 @@ if __name__ == "__main__":
 
             except gspread.exceptions.APIError as e:
                 print(Fore.RED + "An error occurred:")
-                print(Fore.RED + f"While interacting with the Google Sheets API: {e}")
+                print(Fore.RED + f"While interacting with "
+                      "the Google Sheets API: {e}")
                 print("Please check your internet connection and try again.")
 
             except Exception as e:
@@ -221,7 +226,8 @@ if __name__ == "__main__":
                 date_input = input("Date of entry (YYYY-MM-DD):\n")
 
                 if not date_input:
-                    print(Fore.GREEN + f"Automatically saved on today's date: {today}\n")
+                    print(Fore.GREEN + f"Automatically saved on "
+                          "today's date: {today}\n")
                     break
 
                 try:
@@ -252,10 +258,9 @@ if __name__ == "__main__":
                     print()
 
                     if description.strip() == "":
-                        print(Fore.RED + 
-                            "Description cannot be empty."
-                            "Please enter a description."
-                        )
+                        print(Fore.RED +
+                              "Description cannot be empty."
+                              "Please enter a description.")
 
                     elif 1 <= len(description) <= 12:
                         self.description = description
@@ -327,25 +332,30 @@ class Summary:
             try:
                 month = int(input("Enter the month (MM): \n"))
                 if not (1 <= month <= 12):
-                    print(Fore.RED + "Invalid month. Please enter a month between 01 and 12.")
+                    print(Fore.RED + "Invalid month. Please enter a "
+                          "month between 01 and 12.")
                     continue
 
                 year = int(input("Enter the year (YYYY): \n"))
 
                 # Convert month and year to start_date
-                start_date = datetime.strptime(f"{year}-{month:02d}-01", "%Y-%m-%d")
+                start_date = datetime.strptime(
+                    f"{year}-{month:02d}-01", "%Y-%m-%d")
 
                 # Calculate the last day of the month
                 # Which correctly handles leap years
-                end_date = start_date.replace(day=calendar.monthrange(year, month)[1])
+                end_date = start_date.replace(
+                    day=calendar.monthrange(year, month)[1])
 
                 # Return start_date and end_date as a tuple
                 return start_date, end_date
 
             except ValueError:
-                print(Fore.RED + "Invalid input. Please enter a valid month and/or year.")
+                print(Fore.RED + "Invalid input. "
+                      "Please enter a valid month and/or year.")
             except TypeError:
-                print(Fore.RED + "Invalid input type. Please enter numbers for the month and year.")
+                print(Fore.RED + "Invalid input type. "
+                      "Please enter numbers for the month and year.")
 
     def get_weekly_date_input(self):
         """
@@ -432,11 +442,11 @@ class Summary:
         Displays the expenses by category for a given date range.
         """
         filtered_expenses = self.filter_expenses_by_date_range(
-                            start_date, end_date
-                            )
+            start_date, end_date
+        )
         expenses_by_category = self.calculate_expenses_by_category(
-                            filtered_expenses
-                            )
+            filtered_expenses
+        )
 
         # Convert the dictionary to a list of tuples for easier sorting
         expenses_list = list(expenses_by_category.items())
@@ -470,7 +480,8 @@ class Summary:
                   f"{total_expenses:.2f}\n")
         else:
             print(
-                Fore.RED + f"No expenses found for {start_date.strftime('%B %Y')}.")
+                Fore.RED + f"No expenses found for "
+                "{start_date.strftime('%B %Y')}.")
 
         time.sleep(15)
         os.system("clear")
@@ -493,8 +504,8 @@ class Summary:
                     start_date, end_date)
 
                 if not filtered_expenses:
-                    print(Fore.RED + f"No expenses found for week {week_number} of "
-                          f"{start_date.year}, "
+                    print(Fore.RED + f"No expenses found for week "
+                          f"{week_number} of {start_date.year}, "
                           f"from: {start_date.strftime('%Y-%m-%d')} "
                           f"to: {end_date.strftime('%Y-%m-%d')}.\n")
                     continue  # loop to prompt for a new date
@@ -503,7 +514,7 @@ class Summary:
                 total_expenses = self.calculate_total_expenses(
                     filtered_expenses)
 
-                # Calculate the total income 
+                # Calculate the total income
                 total_income = self.calculate_total_income(
                     start_date, end_date)
 
@@ -526,8 +537,8 @@ class Summary:
                 break  # Exit the loop if expenses are found and displayed
 
             except ValueError as e:
-                print(
-                    Fore.RED + f"An error occurred while processing the date: {e}")
+                print(Fore.RED + f"An error occurred while processing "
+                      "the date: {e}")
                 continue
             except Exception as e:
                 print(Fore.RED + f"An unexpected error occurred: {e}")
@@ -536,7 +547,6 @@ class Summary:
         time.sleep(15)
         os.system("clear")
 
-        
     def view_monthly_summary(self):
         """
         Displays the total income, total expenses
