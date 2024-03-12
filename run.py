@@ -457,51 +457,62 @@ class Summary:
 
     def view_weekly_expenses(self):
         """
-        Displays the total expenses for each week in a chosen month.
+        Displays the total expenses for the week that includes a specific date,
+        based on the calendar week, and the remaining income after expenses.
         """
-        # https://docs.python.org/3/library/datetime.html, import calendar??
-        # Get start and end date from user input
-        start_date, end_date = self.get_date_input()
+        while True:
+            try:
+                # Get the specific date from user input
+                start_date, end_date = self.get_weekly_date_input()
 
-        # Calculate the number of weeks in the month
-        weeks_in_month = (end_date - start_date).days // 7 + 1
+                # Calculate the week number of the year for the input date
+                week_number = start_date.isocalendar()[1]
 
-        # Initialize total expenses for the month
-        total_expenses_month = 0
+                # Filter expenses by the chosen date range
+                filtered_expenses = self.filter_expenses_by_date_range(
+                    start_date, end_date)
 
-        # Iterate over each week in the month
-        for week_number in range(weeks_in_month):
-            # Calculatestart and end dates for the current week
-            week_start_date = start_date + timedelta(days=week_number * 7)
-            week_end_date = week_start_date + timedelta(days=6)
+                if not filtered_expenses:
+                    print(f"No expenses found for week {week_number} of "
+                          f"{start_date.year}, "
+                          f"from: {start_date.strftime('%Y-%m-%d')} "
+                          f"to: {end_date.strftime('%Y-%m-%d')}.\n")
+                    continue  # loop to prompt for a new date
 
-            # Filter expenses by the current week's date range
-            filtered_expenses = self.filter_expenses_by_date_range(
-                week_start_date, week_end_date)
+                # Calculate total expenses for the selected week
+                total_expenses = self.calculate_total_expenses(
+                    filtered_expenses)
 
-            # Calculate total expenses for the current week
-            total_expenses_week = self.calculate_total_expenses(
-                filtered_expenses)
+                # Calculate the total income 
+                total_income = self.calculate_total_income(
+                    start_date, end_date)
 
-            # Add the week's total expenses to the month's total
-            total_expenses_month += total_expenses_week
+                # Calculate remaining income after expenses
+                remaining_income = self.calculate_remaining_income(
+                    total_income, total_expenses)
 
-            # Display total expenses for the current week
-            if filtered_expenses:
-                print(f"\nTotal expenses"
-                      f" for week {week_start_date.strftime('%U')} of "
-                      f"{week_start_date.strftime('%Y')}: "
-                      f"{total_expenses_week:.2f}\n")
-            else:
-                print(f"No expenses found for week: "
-                      f"{week_start_date.strftime('%U')} of "
-                      f"{week_start_date.strftime('%Y')}.")
+                os.system("clear")
 
-        # Display total expenses for the entire month
-        print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: "
-              f"{total_expenses_month:.2f}\n")
+                # Display the total expenses for the chosen week
+                # including the week number
+                print("\nWeekly Expenses\n")
+                print(f"Week: {week_number} of {start_date.year}")
+                print(f"From: {start_date.strftime('%Y-%m-%d')} to "
+                      f"{end_date.strftime('%Y-%m-%d')}")
+                print(f"Total Expenses: {total_expenses:.2f}\n")
+                print(f"Remaining Income After Expenses: "
+                      f"{remaining_income:.2f}\n")
 
-        time.sleep(20)
+                break  # Exit the loop if expenses are found and displayed
+
+            except ValueError as e:
+                print(f"An error occurred while processing the date: {e}")
+                continue
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                break  # Exit the loop if an unexpected error occurs
+
+        time.sleep(15)
         os.system("clear")
 
 
