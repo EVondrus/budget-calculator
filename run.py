@@ -77,6 +77,22 @@ if __name__ == "__main__":
             print(char, end="", flush=True)
             # time.sleep(0.1)
 
+    def add_category(category):
+            """
+            Adds a category to the list of expense categories.
+            """
+            global expense_categories
+
+            # Add the category to the expense_categories list
+            if category not in expense_categories:
+                expense_categories.append(category)
+                print(f"Category '{category}' added successfully.\n")
+                time.sleep(3)
+                os.system("clear")
+
+            else:
+                print(f"Category '{category}' already exists.")
+
     def choose_category():
         """
         Displays a list of expense categories with numbers for selection.
@@ -117,7 +133,7 @@ if __name__ == "__main__":
                         add_category(category)
                         break
                     else:
-                        print(f"'{category}' already exists in the list.")
+                        print(f"'{category}' already exists in the list.\n")
                         print("Enter a new category or choose from the list.")
                 break  # Exit the loop after adding a new category
 
@@ -127,19 +143,6 @@ if __name__ == "__main__":
 
         return category
 
-        def add_category(category):
-            """
-            Adds a category to the list of expense categories.
-            """
-            global expense_categories
-
-        # Add the category to the expense_categories list
-        if category not in expense_categories:
-            expense_categories.append(category)
-            print(f"Category '{category}' added successfully.\n")
-
-        else:
-            print(f"Category '{category}' already exists.")
 
     class Entry:
 
@@ -256,6 +259,9 @@ if __name__ == "__main__":
 
             self.date = date
             self.amount = amount
+
+            os.system("clear")
+            time.sleep(0.5)
 
     class IncomeEntry(Entry):
 
