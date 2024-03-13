@@ -143,7 +143,7 @@ if __name__ == "__main__":
             category_choice = get_number_choice(
                 Fore.YELLOW + "Select your choice:\n",
                 valid_choices
-                )
+            )
 
             # If the user chose to create a new category
             # Check against the index of the new category option
@@ -331,12 +331,13 @@ class Summary:
             try:
                 month_input = input("Enter the month (MM): \n")
                 if len(month_input) != 2:
-                    print(Fore.RED + "Invalid input. Please enter the month with two digits.")
+                    print(Fore.RED + ("Invalid input. Please enter "
+                                      "the month with two digits."))
                     continue
-
                 month = int(month_input)
                 if not (1 <= month <= 12):
-                    print(Fore.RED + "Invalid month. Please enter a month between 01 and 12.")
+                    print(Fore.RED + ("Invalid month. Please enter a month "
+                                      "between 01 and 12."))
                     continue
 
                 year = int(input("Enter the year (YYYY): \n"))
@@ -354,9 +355,11 @@ class Summary:
                 return start_date, end_date
 
             except ValueError:
-                print(Fore.RED + "Invalid input. Please enter a valid month and/or year.")
+                print(Fore.RED + "Invalid input. Please enter "
+                                 "a valid month and/or year.")
             except TypeError:
-                print(Fore.RED + "Invalid input type. Please enter numbers for the month and year.")
+                print(Fore.RED + "Invalid input type. Please enter numbers "
+                                 "for the month and year.")
 
     def get_weekly_date_input(self):
         """
@@ -443,11 +446,11 @@ class Summary:
         Displays the expenses by category for a given date range.
         """
         filtered_expenses = self.filter_expenses_by_date_range(
-                            start_date, end_date
-                            )
+            start_date, end_date
+        )
         expenses_by_category = self.calculate_expenses_by_category(
-                            filtered_expenses
-                            )
+            filtered_expenses
+        )
 
         # Convert the dictionary to a list of tuples for easier sorting
         expenses_list = list(expenses_by_category.items())
@@ -482,7 +485,7 @@ class Summary:
         else:
             print(
                 Fore.RED + f"No expenses found for "
-                           f"{start_date.strftime('%B %Y')}.")
+                f"{start_date.strftime('%B %Y')}.")
 
         time.sleep(15)
         os.system("clear")
@@ -589,7 +592,8 @@ class Summary:
         while True:
             year_input = input("Enter the year (YYYY): \n")
             if len(year_input) != 4 or not year_input.isdigit():
-                print(Fore.RED + "Invalid input. Please enter the year in the format YYYY.")
+                print(Fore.RED + "Invalid input. Please enter the year "
+                      "in the format YYYY.")
                 continue
 
             year = int(year_input)
@@ -713,17 +717,17 @@ def menu():
                     "Are you sure you want to exit? (y / n):\n")
 
                 if confirm_exit.lower() == "y":
-                    print("Exiting the Budget Calculator.")
+                    print("Exiting the Budget Calculator...")
                     exit()  # Exit the loop and the program
 
                 elif confirm_exit.lower() == "n":
                     break  # Exit the loop and go back to the main menu
 
                 else:
-                    print("Invalid input. Please enter 'y' or 'n'.")
+                    print(Fore.RED + "Invalid input. Please enter 'y' or 'n'.")
 
         else:
-            print("Invalid choice, Please select: 1, 2, 3 or 4.")
+            print(Fore.YELLOW + "Invalid choice, Please select: 1, 2, 3 or 4.")
 
 
 if __name__ == "__main__":
@@ -731,5 +735,5 @@ if __name__ == "__main__":
         display_welcome_message()
         menu()
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(Fore.RED + f"An unexpected error occurred: {e}")
     exit()
