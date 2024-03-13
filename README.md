@@ -6,6 +6,25 @@ The live link can be found here - [Budget Calculator](https://budget-calculator-
 ![AmIResponsive]()
 
 ## How to Use
+### Installation
+To run the Budget Calculator locally, follow any of these steps:
+<details>
+  <summary>Fork or Clone the repository</summary>
+How to Fork the repository
+    1. Sign in to GitHub.
+    2. Go to the repository for this project - EVondrus/budget-calculator
+    Click the Fork button in the top right corner.
+
+How to Clone the repository
+
+    1. Log in (or sign up) to GitHub.
+    2. Go to the repository for this project - EVondrus/budget-calculator
+    3. Click on the code button, select whether you would like to clone with HTTPS, SSH or GitHub CLI and copy the link shown.
+    4. Open the terminal in your code editor and change the current working directory to the location you want to use for the cloned directory.
+    5. Type 'git clone' into the terminal and then paste the link you copied in step 3. Press enter.
+</details>
+
+### Usage
 The Budget Calculator is designed to be user-friendly, allowing you to manage your finances with ease. Here's a step-by-step guide on how to use its features:
 
 - **Adding Income**
@@ -65,9 +84,9 @@ As the flow chart was created at the outset of the project, it does not fully re
 
 ## Features
 
-### Start Section: TBC
-- 
-- 
+### Welcome Section:
+- A friendly message welcoming the user to the application.
+- By entering any key the user will continue to the program.
 
 ![Welcome]()
 
@@ -238,7 +257,7 @@ In the Budget Calculator project, I employed principles of Object-Oriented Progr
         - Viewing monthly and yearly summaries.
 </details>
 
-## Testing TBC...
+## Testing
 
 ### PEP8 Testing 
 The python file have all been passed through [CI Python Linter](https://pep8ci.herokuapp.com/) The files were checked with no errors. See screen show below:
@@ -305,6 +324,7 @@ The Budget Calculator was tested thoroughly to ensure the following features wor
 - [datetime](https://pypi.org/project/DateTime/): used to get today's date for the entrys and to calculate start and end dates.
 - [gspread](https://pypi.org/project/gspread/): to allow communication with Google Sheets. 
 - [remove](https://docs.python.org/3/library/stdtypes.html#str.replace): remove commas from the amount string before converting it to a float.
+- [calendar](https://docs.python.org/3/library/calendar.html) to get the correct dates
 - [google.oauth2.service_account](https://google-auth.readthedocs.io/en/stable/index.html): used to validate credentials and grant access to google service accounts.
 
 ### Programs Used
@@ -313,6 +333,30 @@ The Budget Calculator was tested thoroughly to ensure the following features wor
 - [Heroku](https://dashboard.heroku.com/apps) -  used to deploy the live project.
 - [Lucidchart](https://www.lucidchart.com/) -  used to create the flowchart
 - [CI Python Linter](https://pep8ci.herokuapp.com/) - used to validate all the Python code
+
+## Known Bugs
+
+The issue: When adding eg. "1.000" it results in "1.00". Likely due to the way floating-point numbers are handled in Python. When you convert a string to a float in Python, it automatically removes trailing zeros after the decimal point. This behavior is part of Python's standard for representing floating-point numbers, which aims to minimize the storage and computational overhead associated with representing very large or very small numbers.
+
+For example, when you convert the string "1.000" to a float, Python interprets it as the number 1.000, but when it's represented as a float, it's stored as 1.00. This is because the trailing zeros after the decimal point do not change the value of the number, and Python's floating-point representation does not include unnecessary trailing zeros.
+
+Incorrectly formatted numbers may result in errors or unexpected behavior in the application!
+
+## Fixed Bugs
+
+### Appending an extra row to the Google worksheet
+The original implementation of the add_category function inadvertently introduced a bug into the Budget Calculator application. This function was responsible for adding a new category to the list of expense categories and simultaneously appending a row to the Google Sheets document with the current date, an empty description, the new category, and a zero amount. This unintended behavior was triggered every time a new category was added, leading to the creation of unnecessary rows in the Google Sheets document that did not represent actual income or expense entries.
+
+To address this issue, the add_category function was modified to separate the concerns of adding a new category to the expense_categories list and appending a row to the Google Sheets document. The modification ensured that a new category could be added without automatically creating an unnecessary row in the Google Sheets document
+
+By isolating the functionality of adding a new category from the process of appending rows to the Google Sheets document, the application now accurately reflects the user's actions, preventing the addition of misleading or irrelevant data to the financial records. This solution not only enhances the application's reliability but also aligns it more closely with the intended user experience, where users can manage their income and expenses without encountering unexpected entries in their financial data.
+
+
+### Colorama and print slow function
+I encountered an issue with Colorama not printing the color of the string when using a slow print function. Likely it stems from how the color codes are applied to the string. When you apply color codes to a string and then attempt to print it slowly using a custom slow print function, the color codes might not be interpreted correctly if the entire string is not printed at once. This can result in the color codes being printed as plain text, followed by the message without color.
+
+To resolve this bug, I applied the color to the individual characters or words within the string, rather than to the entire string. This approach ensures that each part of the message is printed with the correct color, even when using a slow print function that prints the message character by character.
+
 
 ## Deployment
 
@@ -350,6 +394,10 @@ The site is now live and operational.
 - [Stack Overflow](https://stackoverflow.com/)
 - [Python Documentation](https://docs.python.org/3/)
 - [Python Style Guide](https://peps.python.org/pep-0008/)
+
+### Images
+Thanks for the nice image!
+- [Ivan Babydov](https://www.pexels.com/photo/gold-bitcoin-coin-on-background-of-growth-chart-7788009/)
 
 ## Acknowledgements
 
