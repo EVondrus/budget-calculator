@@ -212,11 +212,11 @@ To exit the Budget Calculator, follow these steps:
 ![]()
 
 ### Future Features
+- Remove an unique object: A feature that allowes the user to remove a specific income, expense or category from the program.
 - Expense Tracking: Implement a feature to track recurring expenses automatically, providing insights into spending patterns over time.
 - Expense Analysis Tools: Develop tools for analyzing expenses to identify patterns, such as frequent spending categories or seasonal variations.
 - Budget Analysis: Integrate data visualization tools to generate charts and graphs, offering users a visual representation of their budget allocation and spending habits.
 - Goal Setting: Allow users to set financial goals such as saving for a vacation, buying a house, or paying off debt. The calculator can then track progress towards these goals and provide actionable insights to help achieve them.
-- Integration with Financial Institutions: Allow users to sync their bank accounts and credit cards with the budget calculator to automatically import transactions and update their budget in real-time.
 
 ## Data Model
 In the Budget Calculator project, I employed principles of Object-Oriented Programming to create a modular and maintainable application. The application is centered around four main classes, each with a distinct responsibility.
@@ -309,7 +309,7 @@ The Budget Calculator was tested thoroughly to ensure the following features wor
 - The application was tested to ensure that adding new income or expenses correctly updates the summary. The stored information was verified for accuracy.
 - The summaries were examined to ensure they display accurate information, with proper sorting of data.
 - After successful inputs and operations, the application provided appropriate feedback to the user, confirming actions taken (e.g., addition of income or expense).
-- The application was tested to ensure that any category selected or created by the user exists in the list of predefined categories.
+- The application was tested to ensure that any category selected user exists in the list of predefined categories.
 - The creation of new categories was tested so that the user is not able to create a category that alredy exists in the list.
 - During testing, error messages were deliberately triggered to confirm they provide clear and relevant information to the user, aiding in troubleshooting.
 </details>
@@ -321,9 +321,9 @@ The Budget Calculator was tested thoroughly to ensure the following features wor
 
 - [os](https://docs.python.org/3/library/os.html?highlight=os#module-os): `os.system` is used in order to clear the terminal
 - [time](https://docs.python.org/3/library/time.html): to pause the execution of the program for a specified number of seconds.
-- [datetime](https://pypi.org/project/DateTime/): used to get today's date for the entrys and to calculate start and end dates.
+- [datetime](https://pypi.org/project/DateTime/): used to get today's date for the entrys and to calculate start and end dates. Convert the date string to a datetime object using datetime.strptime.
 - [gspread](https://pypi.org/project/gspread/): to allow communication with Google Sheets. 
-- [remove](https://docs.python.org/3/library/stdtypes.html#str.replace): remove commas from the amount string before converting it to a float.
+- [replace](https://docs.python.org/3/library/stdtypes.html#str.replace): remove commas from the amount string before converting it to a float.
 - [calendar](https://docs.python.org/3/library/calendar.html) to get the correct dates
 - [google.oauth2.service_account](https://google-auth.readthedocs.io/en/stable/index.html): used to validate credentials and grant access to google service accounts.
 
@@ -336,7 +336,7 @@ The Budget Calculator was tested thoroughly to ensure the following features wor
 
 ## Known Bugs
 
-The issue: When adding eg. "1.000" it results in "1.00". Likely due to the way floating-point numbers are handled in Python. When you convert a string to a float in Python, it automatically removes trailing zeros after the decimal point. This behavior is part of Python's standard for representing floating-point numbers, which aims to minimize the storage and computational overhead associated with representing very large or very small numbers.
+The issue: When adding eg. "1.000" it results in "1.00". Likely due to the way floating-point numbers are handled in Python. When you convert a string to a float in Python, it automatically removes trailing zeros after the decimal point. This behavior seem to be part of Python's standard for representing floating-point numbers, which aims to minimize the storage and computational overhead associated with representing very large or very small numbers.
 
 For example, when you convert the string "1.000" to a float, Python interprets it as the number 1.000, but when it's represented as a float, it's stored as 1.00. This is because the trailing zeros after the decimal point do not change the value of the number, and Python's floating-point representation does not include unnecessary trailing zeros.
 
@@ -345,6 +345,7 @@ Incorrectly formatted numbers may result in errors or unexpected behavior in the
 ## Fixed Bugs
 
 ### Appending an extra row to the Google worksheet
+
 The original implementation of the add_category function inadvertently introduced a bug into the Budget Calculator application. This function was responsible for adding a new category to the list of expense categories and simultaneously appending a row to the Google Sheets document with the current date, an empty description, the new category, and a zero amount. This unintended behavior was triggered every time a new category was added, leading to the creation of unnecessary rows in the Google Sheets document that did not represent actual income or expense entries.
 
 To address this issue, the add_category function was modified to separate the concerns of adding a new category to the expense_categories list and appending a row to the Google Sheets document. The modification ensured that a new category could be added without automatically creating an unnecessary row in the Google Sheets document
@@ -353,6 +354,7 @@ By isolating the functionality of adding a new category from the process of appe
 
 
 ### Colorama and print slow function
+
 I encountered an issue with Colorama not printing the color of the string when using a slow print function. Likely it stems from how the color codes are applied to the string. When you apply color codes to a string and then attempt to print it slowly using a custom slow print function, the color codes might not be interpreted correctly if the entire string is not printed at once. This can result in the color codes being printed as plain text, followed by the message without color.
 
 To resolve this bug, I applied the color to the individual characters or words within the string, rather than to the entire string. This approach ensures that each part of the message is printed with the correct color, even when using a slow print function that prints the message character by character.
