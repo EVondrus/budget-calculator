@@ -67,6 +67,9 @@ if __name__ == "__main__":
             time.sleep(0.1)
 
     def display_welcome_message():
+        """
+        Validates user input for a number choice.
+        """
         print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
         time.sleep(1)
         print("This application helps you track "
@@ -79,7 +82,7 @@ if __name__ == "__main__":
 
     def get_number_choice(input_title, valid_choices):
         """
-        Function to validate User number input
+        Validates user input for a number choice.
         """
         input_is_valid = False
 
@@ -100,7 +103,7 @@ if __name__ == "__main__":
 
     def add_category(category):
         """
-        Adds a category to the list of expense categories.
+        Adds a new category to the list of expense categories.
         """
         global expense_categories
 
@@ -159,8 +162,7 @@ if __name__ == "__main__":
                         else:
                             print(Fore.RED + f"'{category}' already exists "
                                   "in the list.")
-                            print("Enter a new category "
-                                  "or choose from the list.\n")
+                            print("Enter a new category name.\n")
                     else:
                         print(Fore.RED + "Category name must be between "
                               "1-12 characters.")
@@ -171,11 +173,15 @@ if __name__ == "__main__":
         return category
 
     class Entry:
+        """
+        Represents an entry in the budget calculator,
+        which can be either an income or an expense.
+        """
 
         def __init__(self, date=None, description=None,
                      category=None, amount=None):
             """
-            Initialize a new Entry object with
+            Initializes a new Entry object with
             specified date, description, category, and amount.
             """
             self.date = date
@@ -293,6 +299,11 @@ if __name__ == "__main__":
             time.sleep(0.5)
 
     class IncomeEntry(Entry):
+        """
+        A class representing an income entry in the budget calculator.
+        Inherits from the Entry class and provides methods for adding
+        monthly and additional income entries.
+        """
 
         def add_monthly_income(self, worksheet):
             """
@@ -311,16 +322,35 @@ if __name__ == "__main__":
             self.add_to_sheet(worksheet, "income", "Extra Income")
 
     class ExpenseEntry(Entry):
+        """
+        A class representing an expense entry in the budget calculator.
+        Inherits from the Entry class and provides a method for adding
+        expense entries.
+        """
 
         def add_expense(self, worksheet):
+            """
+            Collects user input for an expense, including date, description,
+            and amount, and adds it to the specified worksheet under the
+            chosen expense category.
+            """
             self.collect_data(is_additional=True, is_expense=True)
             self.category = choose_category()
             self.add_to_sheet(worksheet, "expense", self.category)
 
 
 class Summary:
+    """
+    A class for summarizing income and expenses data.
+    Provides methods for filtering expenses by date range, calculating
+    total income and expenses, and displaying summaries for different time
+    periods (monthly, weekly, yearly).
+    """
 
     def __init__(self, expenses_data, income_data):
+        """
+        Initializes the Summary class with expenses and income data.
+        """
         self.expenses_data = expenses_data
         self.income_data = income_data
 
@@ -410,7 +440,6 @@ class Summary:
             income_date = datetime.strptime(row[0], "%Y-%m-%d")
             if start_date <= income_date <= end_date:
                 # Remove comma from amount string before converting to float
-                # Bug solved:
                 # https://docs.python.org/3/library/stdtypes.html#str.replace
                 amount_str_wo_comma = row[3].replace(',', '')
                 total_income += float(amount_str_wo_comma)
@@ -425,7 +454,8 @@ class Summary:
 
     def calculate_expenses_by_category(self, expenses):
         """
-        Calculates the total expenses by category from a list of expenses.
+        Calculates the total expenses by category
+        from a list of expenses.
 
         """
         expenses_by_category = {}
