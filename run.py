@@ -413,7 +413,7 @@ class Summary:
         """
         Calculates the total expenses from a list of expenses.
         """
-        return sum(float(expense[3]) for expense in expenses)
+        return sum(float(expense[3].replace(',', '')) for expense in expenses)
 
     def calculate_expenses_by_category(self, expenses):
         """
