@@ -143,7 +143,7 @@ if __name__ == "__main__":
             category_choice = get_number_choice(
                 Fore.YELLOW + "Select your choice:\n",
                 valid_choices
-            )
+                )
 
             # If the user chose to create a new category
             # Check against the index of the new category option
@@ -258,9 +258,8 @@ if __name__ == "__main__":
                     print()
 
                     if description.strip() == "":
-                        print(Fore.RED +
-                              "Description cannot be empty."
-                              "Please enter a description.")
+                        print(Fore.RED + ("Description cannot be empty. "
+                                          "Please enter a description."))
 
                     elif 1 <= len(description) <= 12:
                         self.description = description
@@ -330,10 +329,14 @@ class Summary:
         """
         while True:
             try:
-                month = int(input("Enter the month (MM): \n"))
+                month_input = input("Enter the month (MM): \n")
+                if len(month_input) != 2:
+                    print(Fore.RED + "Invalid input. Please enter the month with two digits.")
+                    continue
+
+                month = int(month_input)
                 if not (1 <= month <= 12):
-                    print(Fore.RED + "Invalid month. Please enter a "
-                          "month between 01 and 12.")
+                    print(Fore.RED + "Invalid month. Please enter a month between 01 and 12.")
                     continue
 
                 year = int(input("Enter the year (YYYY): \n"))
@@ -351,11 +354,9 @@ class Summary:
                 return start_date, end_date
 
             except ValueError:
-                print(Fore.RED + "Invalid input. "
-                      "Please enter a valid month and/or year.")
+                print(Fore.RED + "Invalid input. Please enter a valid month and/or year.")
             except TypeError:
-                print(Fore.RED + "Invalid input type. "
-                      "Please enter numbers for the month and year.")
+                print(Fore.RED + "Invalid input type. Please enter numbers for the month and year.")
 
     def get_weekly_date_input(self):
         """
@@ -374,8 +375,8 @@ class Summary:
                 return start_date, end_date
 
             except ValueError:
-                print(Fore.RED + "Invalid date format."
-                      "Please enter the date in the format YYYY-MM-DD.")
+                print(Fore.RED + ("Invalid date format. "
+                      "Please enter the date in the format YYYY-MM-DD."))
                 continue
 
     def filter_expenses_by_date_range(self, start_date, end_date):
@@ -442,11 +443,11 @@ class Summary:
         Displays the expenses by category for a given date range.
         """
         filtered_expenses = self.filter_expenses_by_date_range(
-            start_date, end_date
-        )
+                            start_date, end_date
+                            )
         expenses_by_category = self.calculate_expenses_by_category(
-            filtered_expenses
-        )
+                            filtered_expenses
+                            )
 
         # Convert the dictionary to a list of tuples for easier sorting
         expenses_list = list(expenses_by_category.items())
@@ -481,7 +482,7 @@ class Summary:
         else:
             print(
                 Fore.RED + f"No expenses found for "
-                "{start_date.strftime('%B %Y')}.")
+                           f"{start_date.strftime('%B %Y')}.")
 
         time.sleep(15)
         os.system("clear")
@@ -508,7 +509,6 @@ class Summary:
                           f"{week_number} of {start_date.year}, "
                           f"from: {start_date.strftime('%Y-%m-%d')} "
                           f"to: {end_date.strftime('%Y-%m-%d')}.\n")
-                    continue  # loop to prompt for a new date
 
                 # Calculate total expenses for the selected week
                 total_expenses = self.calculate_total_expenses(
@@ -586,7 +586,14 @@ class Summary:
         and remaining income for a given year.
         """
         # Get the year from user input
-        year = input("Enter the year (YYYY): \n")
+        while True:
+            year_input = input("Enter the year (YYYY): \n")
+            if len(year_input) != 4 or not year_input.isdigit():
+                print(Fore.RED + "Invalid input. Please enter the year in the format YYYY.")
+                continue
+
+            year = int(year_input)
+            break
 
         # Convert the year to start_date and end_date for the entire year
         start_date = datetime.strptime(f"{year}-01-01", "%Y-%m-%d")
