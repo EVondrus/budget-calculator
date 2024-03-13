@@ -69,11 +69,11 @@ if __name__ == "__main__":
     def display_welcome_message():
         print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
         time.sleep(1)
-        print(Fore.GREEN + "This application helps you track "
+        print("This application helps you track "
               "your income and expenses")
-        print(Fore.GREEN + "providing insights into your financial health.\n")
+        print("providing insights into your financial health.\n")
         time.sleep(1)
-        print(Fore.CYAN + 'Enter any key to continue' + Fore.RESET)
+        print(Fore.MAGENTA + 'Enter any key to continue' + Fore.RESET)
         input()
         os.system("clear")
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
             # Add an option for the user to create a new category
             print(Fore.GREEN + f"{len(expense_categories) + 1}. "
-                "Create a new category\n")
+                  "Create a new category\n")
 
             # Generate a list of valid choices (category numbers)
             # including the option for creating a new category
@@ -140,15 +140,16 @@ if __name__ == "__main__":
 
             # Use get_number_choice function to get the validated user's choice
             category_choice = get_number_choice(
-                "Select your choice:\n",valid_choices)
+                "Select your choice:\n", valid_choices)
 
             # If the user chose to create a new category
             if category_choice == len(expense_categories) + 1:
                 while True:
                     category = input(Fore.YELLOW + "Enter the name of "
-                                    "the new category:\n")
+                                     "the new category:\n")
 
-                    # Validate the category name: not empty and between 1-12 characters
+                    # Validate the category name:
+                    # Not empty and between 1-12 characters
                     if 1 <= len(category) <= 12:
                         # Check if the category already exists in the list
                         if category not in expense_categories:
@@ -157,13 +158,15 @@ if __name__ == "__main__":
                             break
                         else:
                             print(Fore.RED + f"'{category}' already exists "
-                                "in the list.")
-                            print("Enter a new category or choose from the list.\n")
+                                  "in the list.")
+                            print("Enter a new category "
+                                  "or choose from the list.\n")
                     else:
-                        print(Fore.RED + "Category name must be between 1-12 characters.")
+                        print(Fore.RED + "Category name must be between "
+                              "1-12 characters.")
             else:
                 category = expense_categories[category_choice - 1]
-                break # Exit loop if an existing category is selected
+                break  # Exit loop if an existing category is selected
 
         return category
 
@@ -269,7 +272,8 @@ if __name__ == "__main__":
             while True:
                 # Input Amount for Income and Expense
                 try:
-                    print("Enter the amount without any comma or dot (post-tax)")
+                    print(
+                        "Enter the amount without any comma or dot (post-tax)")
                     amount = float(input("Amount:\n"))
                     print()
 
@@ -462,13 +466,15 @@ class Summary:
         # Sort the list by category name
         expenses_list.sort(key=lambda x: x[0])
 
+        os.system("clear")
+
         # Display the total expenses for each category in a list
         print(Fore.RED + "\nMonthly Expenses\n")
         print(Fore.YELLOW + "\nExpenses by Category:\n")
         for category, total in expenses_list:
             print(f"{category}: {total:.2f}\n")
 
-        input(Fore.CYAN + 'Enter any key to continue')
+        input(Fore.MAGENTA + 'Enter any key to continue')
         os.system("clear")
 
     def view_monthly_expenses(self):
@@ -484,6 +490,9 @@ class Summary:
         # Calculate the total expenses for the selected month
         total_expenses = self.calculate_total_expenses(filtered_expenses)
         # Display the total expenses for the chosen month
+
+        os.system("clear")
+
         print(Fore.RED + "\nMonthly Expenses\n")
         if filtered_expenses:
             print(f"\nTotal expenses for {start_date.strftime('%B %Y')}: "
@@ -493,7 +502,7 @@ class Summary:
                 Fore.RED + f"No expenses found for "
                 f"{start_date.strftime('%B %Y')}.")
 
-        input(Fore.CYAN + 'Enter any key to continue')
+        input(Fore.MAGENTA + 'Enter any key to continue')
         os.system("clear")
 
     def view_weekly_expenses(self):
@@ -538,7 +547,7 @@ class Summary:
                 print(Fore.RED + "\nWeekly Expenses\n")
                 print(f"Week: {week_number} of {start_date.year}")
                 print(f"From: {start_date.strftime('%Y-%m-%d')} to "
-                      f"{end_date.strftime('%Y-%m-%d')}")
+                      f"{end_date.strftime('%Y-%m-%d')}\n")
                 print(f"Total Expenses: {total_expenses:.2f}\n")
                 print(Fore.YELLOW + f"Remaining Income After Expenses: "
                       f"{remaining_income:.2f}\n")
@@ -554,7 +563,7 @@ class Summary:
                 break  # Exit the loop if an unexpected error occurs
 
         # time.sleep(15)
-        input(Fore.CYAN + 'Enter any key to continue')
+        input(Fore.MAGENTA + 'Enter any key to continue')
         os.system("clear")
 
     def view_monthly_summary(self):
@@ -588,7 +597,7 @@ class Summary:
         print(Fore.YELLOW + f"Remaining Income: {remaining_income:.2f}\n")
 
         # time.sleep(15)
-        input(Fore.CYAN + 'Enter any key to continue')
+        input(Fore.MAGENTA + 'Enter any key to continue')
         os.system("clear")
 
     def view_yearly_summary(self):
@@ -633,8 +642,7 @@ class Summary:
         print(f"Total Expenses: {total_expenses:.2f}\n")
         print(Fore.YELLOW + f"Remaining Income: {remaining_income:.2f}\n")
 
-        # time.sleep(15)
-        input('Enter any key to continue!')
+        input(Fore.MAGENTA + 'Enter any key to continue')
         os.system("clear")
 
 
