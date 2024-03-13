@@ -70,7 +70,7 @@ if __name__ == "__main__":
         print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
         time.sleep(1)
         print("This application helps you track "
-              "your income and expenses")
+              "your income and expenses,")
         print("providing insights into your financial health.\n")
         time.sleep(1)
         print(Fore.MAGENTA + 'Enter any key to continue' + Fore.RESET)
