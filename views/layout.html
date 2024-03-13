@@ -11,12 +11,30 @@
     <title>Budget Calculator</title>
     <style>
         body {
+            margin: 0;
             font-family: Arial;
+            background-color: rgb(55, 155, 255);
+            background-image: url('https://www.pexels.com/photo/close-up-photo-of-monitor-159888/');
+            background-position: top;
+            background-size: cover;
+            background-repeat: no-repeat;
+
+           /* Center the terminal box*/
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         /**
         * Default styles for xterm.js
         */
+        #terminal {
+            border: 5px solid black;
+            border-radius: 5px;
+            padding-right: 23px;
+        }
 
         .xterm {
             font-feature-settings: "liga"0;
