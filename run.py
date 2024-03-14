@@ -70,7 +70,7 @@ if __name__ == "__main__":
         """
         Validates user input for a number choice.
         """
-        print(Fore.YELLOW + "\nWelcome to the Budget Calculator!\n")
+        print_slow("\nWelcome to the Budget Calculator!\n\n", Fore.YELLOW)
         time.sleep(1)
         print("This application helps you track "
               "your income and expenses,")
