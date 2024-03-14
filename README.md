@@ -401,16 +401,23 @@ The following steps were then taken:
 The site is now live and operational.
 </details>
 
-## Credits  TBC
+## Credits
+
 ### Resources Used
+
 - [W3Schools](https://www.w3schools.com/)  
 - [Stack Overflow](https://stackoverflow.com/)
 - [Python Documentation](https://docs.python.org/3/)
 - [Python Style Guide](https://peps.python.org/pep-0008/)
 
 ### Images
-Thanks for the nice image!
+
+Thanks for the nice background image!
 - [Ivan Babydov](https://www.pexels.com/photo/gold-bitcoin-coin-on-background-of-growth-chart-7788009/)
+
+### Inspiration
+I got the inspiration for my Budget Calculator and how to to build it from:
+- - [NuralNine](https://youtu.be/tMLsR0_2yIE?si=1kYnIiGMa8-DqeBu)
 
 ## Acknowledgements
 
