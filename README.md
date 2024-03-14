@@ -417,7 +417,7 @@ Thanks for the nice background image!
 
 ### Inspiration
 I got the inspiration for my Budget Calculator and how to to build it from:
-- - [NuralNine](https://youtu.be/tMLsR0_2yIE?si=1kYnIiGMa8-DqeBu)
+- [NuralNine](https://youtu.be/tMLsR0_2yIE?si=1kYnIiGMa8-DqeBu)
 
 ## Acknowledgements
 
