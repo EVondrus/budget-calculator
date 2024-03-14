@@ -1,16 +1,20 @@
 # The Budget Calculator
+
 The Budget Calculator provides a simple yet effective solution for managing personal finances. With its intuitive interface and seamless integration with Google Sheets, users can easily track their income and expenses, enabling better financial decision-making.
 
 The live link can be found here - [Budget Calculator](https://budget-calculator-evo-f9181bd7422d.herokuapp.com/)
 
-![AmIResponsive]()
+![AmIResponsive](/docs/amIResponsive-img3.png)
 
 ## How to Use
+
 ### Installation
 To run the Budget Calculator locally, follow any of these steps:
 <details>
   <summary>Fork or Clone the repository</summary>
+  
 How to Fork the repository
+
     1. Sign in to GitHub.
     2. Go to the repository for this project - EVondrus/budget-calculator
     Click the Fork button in the top right corner.
@@ -24,8 +28,12 @@ How to Clone the repository
     5. Type 'git clone' into the terminal and then paste the link you copied in step 3. Press enter.
 </details>
 
-### Usage
-The Budget Calculator is designed to be user-friendly, allowing you to manage your finances with ease. Here's a step-by-step guide on how to use its features:
+### Guide
+
+The Budget Calculator is designed to be simple and user-friendly, allowing you to manage your finances with ease. Here's a guide on how to use its features:
+
+<details>
+  <summary>Step-by-step guide</summary>
 
 - **Adding Income**
     - Choose Income Type:
@@ -60,6 +68,7 @@ The Budget Calculator is designed to be user-friendly, allowing you to manage yo
     - Exit Confirmation: 
         - If you confirm, the program will exit, and you'll be returned to your system's command line or terminal.
         - Else you'll be taken back to the menu.
+</details>
 
 ## Site Owner Goals
 - Provide users with a functional and user-friendly application for managing their finances efficiently.
@@ -80,15 +89,16 @@ To visualize the sequence of actions needed in the budget calculator, I utilized
 
 As the flow chart was created at the outset of the project, it does not fully reflect all elements of the program.
 
-![Flow Chart]()
+![Flow Chart](/docs/lucidchart.png)
 
 ## Features
 
 ### Welcome Section:
 - A friendly message welcoming the user to the application.
+- The terminal is running on a background image suited for the application purpouse.
 - By entering any key the user will continue to the program.
 
-![Welcome]()
+![Welcome](/docs/welcome.png)
 
 ### Interactive Menu:
 
@@ -99,7 +109,7 @@ The program features an interactive menu that guides users through different opt
 3. Viewing summaries.
 4. Exit the program.
 
-![User Menu]()
+![User Menu](/docs/menu-img.png)
 
 ### Adding Income Entries:
 
@@ -120,7 +130,8 @@ To add income entries, follow these steps:
 
 5. The program will confirm the addition of your income and display a summary of the transaction.
 
-![Adding Income]()
+![Adding Monthly Income](/docs/addMonthInc.png)
+![Adding Additional Income](/docs/addExtraInc.png)
 
 ### Adding Expense Entries:
 
@@ -141,7 +152,8 @@ To add income entries, follow these steps:
 
 6. The program will confirm the addition of your expense and display a summary of the transaction.
 
-![Adding Expense]()
+![Adding Expense](/docs/addExpense.png)
+![Adding Category](/docs/selectCat.png)
 
 ### Viewing Summary:
 
@@ -165,10 +177,12 @@ To add income entries, follow these steps:
 
 4. The program will display the requested summary, providing you with insights into your income and expenses. 
 
-![View Summary]()
-![View Summary]()
+![Summary Meny](/docs/summaryMenu.png)
+![View Monthly Expenses by Category](/docs/summaryMonthByCat.png)
+![View Monthly Expenses by Category](/docs/summaryWeek.png)
 
 ### Exiting the Program
+
 To exit the Budget Calculator, follow these steps:
 
 1. From the main menu, select '4' to exit the program.
@@ -179,7 +193,7 @@ To exit the Budget Calculator, follow these steps:
     - If you entered 'y', a goodbye message will appear, and the calculator will be ended using the exit() method.
     - If you entered 'n', you will return to the main menu without exiting the program.
 
-![Exit]()
+![Exit](/docs/exit.png)
 
 ### Date Handling:
 
@@ -201,15 +215,12 @@ To exit the Budget Calculator, follow these steps:
 ### Summary 
 - Google Sheets serves as the central repository for storing and retrieving financial data. The budget calculator accesses Google Sheets via the Google Drive and Google Sheets APIs hosted on the Google Cloud Platform.
 
-![Google Sheet]()
-
 - To ensure secure access to Google Sheets, dedicated credentials were generated and stored.
 - These credentials are securely managed within the cred.json file, included in the .gitignore to prevent inadvertent exposure on GitHub. 
 - Additionally, they are configured as environment variables (Config Vars) on Heroku, ensuring secure access during runtime.
 - This integration of Google Sheets enhances the functionality of the budget calculator, providing users with a robust platform for managing and analyzing their financial data effectively.
-- PANDAS FOR SORTING?
 
-![]()
+ ![Google Sheet](/docs/googleWorksheet.png)
 
 ### Future Features
 - Remove an unique object: A feature that allowes the user to remove a specific income, expense or category from the program.
@@ -262,7 +273,7 @@ In the Budget Calculator project, I employed principles of Object-Oriented Progr
 ### PEP8 Testing 
 The python file have all been passed through [CI Python Linter](https://pep8ci.herokuapp.com/) The files were checked with no errors. See screen show below:
 
-![Py testing]()
+![Py Linter](docs/pyLinterTest.png)
 
 All of the below tests were completed in my local terminal and also in the Heroku terminal.
 
@@ -278,19 +289,19 @@ All user inputs in the Budget Calculator application were thoroughly tested to e
     - Additionally, when the user chooses to exit the Budget Calculator, they are prompted to input 'y' or 'n' to confirm their choice. Only lowercase letters are accepted for this confirmation. 
     - If the user inputs a number or letter that does not match any of the menu options, an error message is displayed.
 
-    ![Input Validation]()
+    ![Input Validation](/docs/numValidator.png)
 
 - Date Input: 
     - The application was tested to ensure that the date input must be in the "YYYY-MM-DD" format. Inputs that do not match this format were rejected, and an error message was displayed to the user, prompting them to enter the date in the correct format.
     - If the user leave the date input empty and the press enter key, it will automaically add the chosen income or expense on todays date.
 
-    ![Input Validation]()
+    ![Input Validation](/docs/dateValidator.png)
 
 - Income and Expense Input:
     - The application checks that the amount entered for incomes and expenses is a positive number. If a negative number or non-numeric input is entered, an error message is displayed, and the user is prompted to enter a valid amount.
     - For additional income and expenses, the application validates that the description does not exceed a certain character limit (12 characters). If the description is too long, an error message is displayed, and the user is prompted to enter a shorter description.
 
-    ![Input Validation]()
+    ![Input Validation](/docs/descriptValidator.png)
 
 - Category Input:
     - Category inputs must not exceed 12 characters to fit the columns in the Google sheet.
@@ -298,7 +309,7 @@ All user inputs in the Budget Calculator application were thoroughly tested to e
 - Category Input:
     - Category inputs must not exceed 12 characters to fit the columns in the Google sheet.
 
-![Input Validation]()
+![Input Validation](/docs/categoryValidator.png)
 </details>
 
 ### Other Testing
